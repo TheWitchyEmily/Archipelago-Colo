@@ -2,7 +2,7 @@ import os
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess
-from typing import Dict
+from typing import Dict, ClassVar
 from .Options import ColosseumOptions, RuiUnlock, Goal, RealgamTowerUnlock, PurifyUnlockAmount
 from .Locations import regions_to_locations, all_locations, set_location_options, location_count
 from .Items import ColosseumItem, all_items, base_id, filler, used_items, set_items_used
@@ -14,6 +14,7 @@ from .client.constants import CLIENT_VERSION, AP_WORLD_VERSION_NAME
 from .iso_helper.colo_rom import ColoPlayerContainer
 from Options import OptionGroup
 from BaseClasses import Region, Item, ItemClassification
+from .client.colosseum_settings import PokemonColosseumSettings
 
 def run_client(*args):
     from .PCClient import main
@@ -41,6 +42,7 @@ class ColosseumWorld(World):
     options = ColosseumOptions
     item_name_to_id = {item["name"]: i + base_id for i, item in enumerate(all_items)}
     location_name_to_id = {location: i + base_id for i, location in enumerate(all_locations)}
+    settings: ClassVar[PokemonColosseumSettings]
 
     item_name_groups = {
         Categories.shadow_pokemon: {

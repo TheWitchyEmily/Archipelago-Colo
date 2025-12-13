@@ -17,7 +17,7 @@ class EmulatorSettings(settings.Group):
     additional_args: EmulatorAdditionalArguments = EmulatorAdditionalArguments([ ])
     auto_start: bool = True
 
-class ISOFile(settings.UserFilePath)
+class ISOFile(settings.UserFilePath):
     """ Locate your Pokemon Colosseum ISO """
     description = "Pokemon Colosseum (USA) Iso"
     copy_to = None

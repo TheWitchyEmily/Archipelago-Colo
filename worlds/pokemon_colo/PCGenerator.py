@@ -41,7 +41,7 @@ class ColosseumRandomizer:
         logger.info("Update ISO game ID with AP generated seed")
         bin_data = self.gcm.read_file_data("sys/boot.bin")
         bin_data.seek(0x01)
-        bin_data.write(sbf.string_to_bytes(local_seed, len(local_seed))
+        bin_data.write(sbf.string_to_bytes(local_seed, len(local_seed)))
         self.gcm.changed_files["sys/boot.bin"] = bin_data
 
         # Handle rest of game randomization/AP related modifications to files
@@ -63,12 +63,12 @@ class ColosseumRandomizer:
             raise Utils.VersionException("Error! Server was generated with a different Pokemon Colosseum " +
                         f"APWorld Version.\nThe client version is {CLIENT_VERSION}, which is incompatable with the given version of {ap_world_version}.")
 
-        def save_randomized_isoo(self):
-            for _, _ in self.export_files_from_memory():
-                continue
+    def save_randomized_iso(self):
+        for _, _ in self.export_files_from_memory():
+            continue
 
     def export_files_from_memory(self):
         yield from self.gcm.export_disc_to_iso_with_changed_files(self.randomized_output_file_path)
 
-if __name__ == '__main__'
+if __name__ == '__main__':
     print("Run this from Launcher.py instead")
