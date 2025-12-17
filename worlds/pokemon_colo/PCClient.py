@@ -174,9 +174,9 @@ class PCContext(BaseContext):
                             continue
 
                     if not self.dolphin_status == CONNECTION_CONNECTED:
-                        # If Game ID is standard, random ISO not loaded
-                        game_id = read_string(0x80000000, 6)
-                        if game_id in ["GC6E01"]:
+                        # If address 800000008 is not set, random ISO not loaded
+                        game_id = read_string(0x80000008, 1)
+                        if not game_id:
                             self.dolphin_status = CONNECTION_REFUSED
                             logger.info(self.dolphin_status)
                             dme.un_hook()
