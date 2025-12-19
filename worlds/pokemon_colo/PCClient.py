@@ -174,8 +174,8 @@ class PCContext(BaseContext):
                             continue
 
                     if not self.dolphin_status == CONNECTION_CONNECTED:
-                        # If address 800000008 is not set, random ISO not loaded
-                        game_id = read_string(0x80000008, 1)
+                        # If address 800000009 is not set, random ISO not loaded
+                        game_id = read_string(0x80000009, 1)
                         if not game_id:
                             self.dolphin_status = CONNECTION_REFUSED
                             logger.info(self.dolphin_status)
