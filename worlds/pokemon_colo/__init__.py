@@ -119,11 +119,9 @@ class ColosseumWorld(World):
         visualize_regions(self.multiworld.get_region("Menu", self.player), "my_world.puml")
 
     def create_items(self) -> None:
-        items_added = 0
+        items_added = 1 # No idea why setting this to 1 fixes too many items
         list = used_items.copy()
         # Set item rules according to world options
-        if self.options.rui_unlock != RuiUnlock.option_multiworld:
-            items_added += 1
         if self.options.rui_unlock == RuiUnlock.option_auto:
             self.multiworld.push_precollected(self.create_item(Items.Progression.rui)) # Force Rui to be given to the player at the start
         elif self.options.rui_unlock == RuiUnlock.option_sphere_1:
@@ -136,7 +134,6 @@ class ColosseumWorld(World):
                 continue
             for _ in range(item["count"]):
                 item_holder = self.create_item(item["name"])
-                print(item_holder)
                 self.multiworld.itempool.append(item_holder)
                 items_added += 1
 
