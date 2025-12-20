@@ -13,7 +13,7 @@ from .Presets import option_presets
 from .client.constants import CLIENT_VERSION, AP_WORLD_VERSION_NAME
 from .iso_helper.colo_rom import ColoPlayerContainer
 from Options import OptionGroup
-from BaseClasses import Region, Item, ItemClassification
+from BaseClasses import Region, Item, ItemClassification, Tutorial
 from .client.colosseum_settings import PokemonColosseumSettings
 
 def run_client(*args):
@@ -35,6 +35,17 @@ class ColosseumWeb(WebWorld):
     options_presets = option_presets
     theme = "stone"
 
+    tutorials = [
+        Tutorial(
+            "Multiworld Setup Guide",
+            "A guide to connect Pokemon Colosseum randomizer to an Archipelago Multiworld",
+            "English",
+            "setup_en.md",
+            "setup/en",
+            ["zellman01"],
+        )
+    ]
+
 class ColosseumWorld(World):
     """Colosseum Description"""
     game = "Pokemon Colosseum"
@@ -43,6 +54,7 @@ class ColosseumWorld(World):
     item_name_to_id = {item["name"]: i + base_id for i, item in enumerate(all_items)}
     location_name_to_id = {location: i + base_id for i, location in enumerate(all_locations)}
     settings: ClassVar[PokemonColosseumSettings]
+    web = ColosseumWeb()
 
     item_name_groups = {
         Categories.shadow_pokemon: {
