@@ -2,7 +2,7 @@ import os
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess
-from typing import Dict, ClassVar
+from typing import Dict, ClassVar, List
 from .Options import ColosseumOptions, RuiUnlock, Goal, RealgamTowerUnlock, PurifyUnlockAmount
 from .Locations import regions_to_locations, all_locations, set_location_options, location_count
 from .Items import ColosseumItem, all_items, base_id, filler, used_items, set_items_used
@@ -133,6 +133,7 @@ class ColosseumWorld(World):
     def create_items(self) -> None:
         items_added = 1 # No idea why setting this to 1 fixes too many items
         list = used_items.copy()
+        created_items: List[ColosseumItem] = []
         # Set item rules according to world options
         if self.options.rui_unlock == RuiUnlock.option_auto:
             self.multiworld.push_precollected(self.create_item(Items.Progression.rui)) # Force Rui to be given to the player at the start
@@ -146,7 +147,7 @@ class ColosseumWorld(World):
                 continue
             for _ in range(item["count"]):
                 item_holder = self.create_item(item["name"])
-                self.multiworld.itempool.append(item_holder)
+                created_items.append(item_holder)
                 items_added += 1
 
         loc_left = location_count(self) - items_added
@@ -154,7 +155,9 @@ class ColosseumWorld(World):
         for i in range(loc_left):
             index = i % len(filler)
             filler_item = self.create_item(filler[index]["name"])
-            self.multiworld.itempool.append(filler_item)
+            created_items.append(filler_item)
+
+        self.multiworld.itempool += created_items
 
     def set_rules(self) -> None:
         Rules.ColosseumRules(self).set_rules()
