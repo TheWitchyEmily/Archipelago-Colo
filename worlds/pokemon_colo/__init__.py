@@ -41,7 +41,7 @@ class ColosseumWeb(WebWorld):
             "A guide to connect Pokemon Colosseum randomizer to an Archipelago Multiworld",
             "English",
             "setup_en.md",
-            "setup/en",
+            "docs",
             ["zellman01"],
         )
     ]
@@ -50,7 +50,7 @@ class ColosseumWorld(World):
     """Colosseum Description"""
     game = "Pokemon Colosseum"
     options_dataclass = ColosseumOptions
-    options = ColosseumOptions
+    options: ColosseumOptions
     item_name_to_id = {item["name"]: i + base_id for i, item in enumerate(all_items)}
     location_name_to_id = {location: i + base_id for i, location in enumerate(all_locations)}
     settings: ClassVar[PokemonColosseumSettings]
