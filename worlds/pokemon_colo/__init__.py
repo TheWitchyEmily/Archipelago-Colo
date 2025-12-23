@@ -2,18 +2,18 @@ import os
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess
-from typing import Dict, ClassVar, List
+from typing import Dict, ClassVar, List, Any
 from .Options import ColosseumOptions, RuiUnlock, Goal, RealgamTowerUnlock, PurifyUnlockAmount
-from .Locations import regions_to_locations, all_locations, set_location_options, location_count
-from .Items import ColosseumItem, all_items, base_id, filler, used_items, set_items_used
+from .Locations import ColosseumLocation, all_locations, set_location_options
+from .Items import ColosseumItem, all_items, base_id, filler, set_items_used
 from .Regions import colo_regions_all
 from .Rules import ColosseumRules
-from .Strings import Categories, Items
+from .Strings import Categories, Items, Events, Locations
 from .Presets import option_presets
 from .client.constants import CLIENT_VERSION, AP_WORLD_VERSION_NAME
 from .iso_helper.colo_rom import ColoPlayerContainer
 from Options import OptionGroup
-from BaseClasses import Region, Item, ItemClassification, Tutorial
+from BaseClasses import Region, Item, ItemClassification, Tutorial, Location
 from .client.colosseum_settings import PokemonColosseumSettings
 
 def run_client(*args):
@@ -108,14 +108,29 @@ class ColosseumWorld(World):
         },
     }
 
-    def create_item(self, name: str) -> Item:
+    def __init__(self, multiworld, player):
+        super(ColosseumWorld, self).__init__(multiworld, player)
+        self.regions = None
+        self.used_items = None
+        self.items_created = 0
+        """
+        Items created outside of the create_items step
+        """
+
+    def location_count(self) -> int:
+        total = 0
+        for key, value in self.regions.items():
+            total += len(value)
+        return total
+
+    def create_item(self, name: str) -> ColosseumItem:
         item_id = self.item_name_to_id[name]
         item_data = all_items[item_id - base_id]
         return ColosseumItem(name, item_data["classification"], item_id, self.player)
 
     def generate_early(self) -> None:
-        set_location_options(self.options)
-        set_items_used(self.options)
+        self.regions = set_location_options(self.options)
+        self.used_items = set_items_used(self.options)
 
     def create_regions(self) -> None:        
         for name in colo_regions_all.keys():
@@ -125,21 +140,32 @@ class ColosseumWorld(World):
             region = self.get_region(region_name)
             region.add_exits(region_connections)
             region.add_locations({
-                location: self.location_name_to_id[location] for location in regions_to_locations[region_name]
-            })
+                location: self.location_name_to_id[location] for location in self.regions[region_name]
+            }, ColosseumLocation)
         from Utils import visualize_regions
         visualize_regions(self.multiworld.get_region("Menu", self.player), "my_world.puml")
 
-    def create_items(self) -> None:
-        items_added = 1 # No idea why setting this to 1 fixes too many items
-        list = used_items.copy()
-        created_items: List[ColosseumItem] = []
+    def optioned_items(self) -> None:
         # Set item rules according to world options
+        # Rui's options
         if self.options.rui_unlock == RuiUnlock.option_auto:
             self.multiworld.push_precollected(self.create_item(Items.Progression.rui)) # Force Rui to be given to the player at the start
+            self.items_created += 1
         elif self.options.rui_unlock == RuiUnlock.option_sphere_1:
             self.multiworld.local_early_items[self.player][Items.Progression.rui] = 1 # Force Rui to be in sphere one, to prevent needing to restart to get early shadow pokemon capture checks
+        # Goal options
+        goal_item = ColosseumItem(Events.goal, ItemClassification.progression, self.item_name_to_id[Events.goal], self.player)
+        win_loc: Location = None
+        if self.options.goal == Goal.option_evice:
+            win_loc = self.multiworld.get_location(Locations.Trainers.evice, self.player)
+        win_loc.place_locked_item(goal_item)
+        self.items_created += 1
 
+    def create_items(self) -> None:
+        list = self.used_items.copy()
+        created_items: List[ColosseumItem] = []
+        self.optioned_items()
+        items_added = self.items_created
         collected_names = [item.name for item in self.multiworld.precollected_items[self.player]]
 
         for item in list:
@@ -150,13 +176,12 @@ class ColosseumWorld(World):
                 created_items.append(item_holder)
                 items_added += 1
 
-        loc_left = location_count(self) - items_added
+        loc_left = self.location_count() - items_added
 
         for i in range(loc_left):
             index = i % len(filler)
             filler_item = self.create_item(filler[index]["name"])
             created_items.append(filler_item)
-
         self.multiworld.itempool += created_items
 
     def set_rules(self) -> None:
@@ -191,22 +216,18 @@ class ColosseumWorld(World):
         # Write expected zip container to Generated Seed folder
         pc_container.write()
 
-    def fill_slot_data(self) -> Dict[str, object]:
-        slot_data: Dict[str, object] = {
-            "Options": {
-                "Goal": self.options.goal.value,
-                "RealgamTowerUnlock": self.options.realgam_tower_unlock.value,
-                "PurifyUnlockAmount": self.options.purify_unlock_amount.value,
-                "PhenacStarterChoice": self.options.phenac_starter_choice.value,
-                "RuiUnlock": self.options.rui_unlock.value,
-                "ColosseumSanity": self.options.colosseum_sanity.value,
-                "PostgameShadowPokemon": bool(self.options.postgame_shadow_pokemon.value),
-                "MirakleB": bool(self.options.mirakle_b.value)
-            },
-            "Seed": self.multiworld.seed_name,
-            "Slot": self.multiworld.player_name[self.player],
-            "TotalLocations": location_count(self),
-            "Version": CLIENT_VERSION
+    # Data for PC tracker
+    def fill_slot_data(self) -> Dict[str, Any]:
+        return {
+            "Goal": self.options.goal.value,
+            "RealgamTowerUnlock": self.options.realgam_tower_unlock.value,
+            "PurifyUnlockAmount": self.options.purify_unlock_amount.value,
+            "PhenacStarterChoice": self.options.phenac_starter_choice.value,
+            "RuiUnlock": self.options.rui_unlock.value,
+            "ColosseumSanity": self.options.colosseum_sanity.value,
+            "PostgameShadowPokemon": self.options.postgame_shadow_pokemon.value,
+            "MirakleB": self.options.mirakle_b.value,
+            "Seed": self.multiworld.seed,
+            "TotalLocations": self.location_count(),
+            "Version": CLIENT_VERSION,
         }
-
-        return slot_data

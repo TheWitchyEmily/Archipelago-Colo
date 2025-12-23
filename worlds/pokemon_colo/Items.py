@@ -1,7 +1,7 @@
 from BaseClasses import MultiWorld
 from typing import TypedDict, List, Dict
 from BaseClasses import ItemClassification, Item
-from .Strings import Items
+from .Strings import Items, Events
 from .Options import ColosseumOptions, RuiUnlock, ColosseumSanity
 
 base_id = 159700
@@ -302,11 +302,17 @@ filler: List[ItemDesc] = [
      'classification': ItemClassification.filler}
 ]
 
-all_items = prog_items + shadow_pokemon + useful_items + filler + colosseum_round_items + post_game_shadows
-used_items = []
+event_items: List[ItemDesc] = [
+    {'name': Events.goal,
+     'count': 0, # In case it somehow get into used_items it will not be added
+     'classification': ItemClassification.progression}
+]
 
-def set_items_used(options: ColosseumOptions) -> None:
+all_items = prog_items + shadow_pokemon + useful_items + filler + colosseum_round_items + post_game_shadows + event_items
+
+def set_items_used(options: ColosseumOptions) -> List[ItemDesc]:
     # Set items to be used in the multiworld here to used_items
+    used_items = []
     used_items.extend(prog_items)
     used_items.extend(shadow_pokemon)
 
@@ -316,3 +322,4 @@ def set_items_used(options: ColosseumOptions) -> None:
     used_items.extend(useful_items)
     if options.colosseum_sanity != ColosseumSanity.option_off:
         used_items.extend(colosseum_round_items)
+    return used_items

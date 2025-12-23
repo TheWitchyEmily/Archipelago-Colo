@@ -1,8 +1,8 @@
 from typing import Dict, Callable, TYPE_CHECKING
 from BaseClasses import CollectionState, ItemClassification
-from .Strings import Regions, Items, Locations, Categories
+from .Strings import Regions, Items, Locations, Categories, Events
 from .Items import ColosseumItem
-from .Options import ColosseumOptions, ColosseumSanity, RealgamTowerUnlock
+from .Options import ColosseumOptions, ColosseumSanity, RealgamTowerUnlock, Goal
 
 if TYPE_CHECKING:
     from . import ColosseumWorld
@@ -394,9 +394,7 @@ class ColosseumRules:
 
     def set_rules(self) -> None:
         multiworld = self.world.multiworld
-        # Set victory based on goal
-        multiworld.get_location(Locations.Trainers.evice, self.player).place_locked_item(ColosseumItem("Goal", ItemClassification.progression, 0000, self.player))
-        multiworld.completion_condition[self.player] = lambda state: state.has("Goal", self.player)
+        multiworld.completion_condition[self.player] = lambda state: state.has(Events.goal, self.player)
         for region in multiworld.get_regions(self.player):
             if region.name in self.region_rules:
                 for entrance in region.entrances:

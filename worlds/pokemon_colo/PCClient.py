@@ -1,5 +1,5 @@
 import asyncio, time, copy, sys
-from typing import Any
+from typing import Optional
 
 # AP imports
 import NetUtils, Utils
@@ -106,9 +106,9 @@ class PCContext(BaseContext):
                         f"same APWorld as the generator, which is '{local_version}'")
 
                 self.arg_seed = str(slot_data["Seed"])
-                self.goal = slot_data["Options"]["Goal"]
-                self.tower_unlock = slot_data["Options"]["RealgamTowerUnlock"]
-                self.purify_unlock = slot_data["Options"]["PurifyUnlockAmount"]
+                self.goal = slot_data["Goal"]
+                self.tower_unlock = slot_data["RealgamTowerUnlock"]
+                self.purify_unlock = slot_data["PurifyUnlockAmount"]
 
             case "Bounced":
                 if not hasattr(self, "instance_id"):

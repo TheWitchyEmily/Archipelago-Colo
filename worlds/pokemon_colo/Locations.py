@@ -6,7 +6,7 @@ from .Options import ColosseumOptions, ColosseumSanity
 if TYPE_CHECKING:
     from . import ColosseumWorld
 
-class ColoLocation(Location):
+class ColosseumLocation(Location):
     game: str = "Pokemon Colosseum"
 
 start_locations = [
@@ -517,33 +517,34 @@ regions_to_locations: Dict[str, List[str]] = {
     Regions.snagem: [],
 }
 
-def set_location_options(options: ColosseumOptions) -> None:
-    phenac_locations.append(starter_trainer_locations[options.phenac_starter_choice])
-    phenac_locations.append(starter_pokemon_captured[options.phenac_starter_choice])
-    relic_stone_locations.insert(1, starter_pokemon_purified[options.phenac_starter_choice])
-    relic_stone_locations.append(starter_pokemon_purified[options.phenac_starter_choice + 1 % 3])
-    relic_stone_locations.append(starter_pokemon_purified[options.phenac_starter_choice + 2 % 3])
-    tower_postgate_locations.insert(1, starter_trainer_locations_1[options.phenac_starter_choice])
+def set_location_options(options: ColosseumOptions) -> Dict[str, List[str]]:
+    local_regions = regions_to_locations.copy()
+    local_phenac = phenac_locations.copy()
+    local_relic = relic_stone_locations.copy()
+    local_tower = tower_postgate_locations.copy()
+    local_cave = pyrite_cave_locations.copy()
+
+    local_phenac.append(starter_trainer_locations[options.phenac_starter_choice])
+    local_phenac.append(starter_pokemon_captured[options.phenac_starter_choice])
+    local_relic.insert(1, starter_pokemon_purified[options.phenac_starter_choice])
+    local_relic.append(starter_pokemon_purified[options.phenac_starter_choice + 1 % 3])
+    local_relic.append(starter_pokemon_purified[options.phenac_starter_choice + 2 % 3])
+    local_tower.insert(1, starter_trainer_locations_1[options.phenac_starter_choice])
 
     if options.postgame_shadow_pokemon:
-        relic_stone_locations.extend(postgame_purify)
+        local_relic.extend(postgame_purify)
 
     if options.mirakle_b: 
-        pyrite_cave_locations.extend(pyrite_cave_extra)
+        local_cave.extend(pyrite_cave_extra)
 
     if options.colosseum_sanity != ColosseumSanity.option_off:
-        regions_to_locations[Regions.phenac_colosseum] = phenac_colosseum_r1_locations
-        regions_to_locations[Regions.phenac_colosseum_r2] = phenac_colosseum_r2_locations
-        regions_to_locations[Regions.phenac_colosseum_r3] = phenac_colosseum_r3_locations
-        regions_to_locations[Regions.phenac_colosseum_r4] = phenac_colosseum_r4_locations
+        local_regions[Regions.phenac_colosseum] = phenac_colosseum_r1_locations
+        local_regions[Regions.phenac_colosseum_r2] = phenac_colosseum_r2_locations
+        local_regions[Regions.phenac_colosseum_r3] = phenac_colosseum_r3_locations
+        local_regions[Regions.phenac_colosseum_r4] = phenac_colosseum_r4_locations
 
-    regions_to_locations[Regions.phenac] = phenac_locations
-    regions_to_locations[Regions.pyrite_cave] = pyrite_cave_locations
-    regions_to_locations[Regions.purify] = relic_stone_locations
-    regions_to_locations[Regions.pre_final] = tower_postgate_locations
-
-def location_count(world: "ColosseumWorld") -> int:
-    total = 0
-    for key, value in regions_to_locations.items():
-        total += len(value)
-    return total
+    local_regions[Regions.phenac] = local_phenac
+    local_regions[Regions.pyrite_cave] = local_cave
+    local_regions[Regions.purify] = local_relic
+    local_regions[Regions.pre_final] = local_tower
+    return local_regions

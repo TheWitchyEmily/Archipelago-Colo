@@ -365,7 +365,9 @@ class Regions:
     pre_final = "Realgam Tower - After Gate"
     final = "Tower Colosseum"
     
-    
+class Events:
+    goal = "Goal"
+
 class Items:
     class Progression:
         makuhita = "Makuhita"
