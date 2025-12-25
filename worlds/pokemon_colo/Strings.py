@@ -16,7 +16,7 @@ class Locations:
         dugo = "Pre Gym - Rich Boy Dugo Defeated"
         gwin = "Pre Gym - Lady Gwin Defeated"
         justy = "Pre Gym - Pregym Leader Justy Defeated"
-        kaid = "Phenac City - Roller Boy Kaid Defeated"
+        kaid = "Phenac City - Roller Boy Kaib Defeated"
         drig = "Phenac City - Fun Old Man Drig Defeated"
         emok = "Pyrite Town - Chaser Emok Defeated"
         calda = "Pyrite Town - Chaser Calda Defeated"

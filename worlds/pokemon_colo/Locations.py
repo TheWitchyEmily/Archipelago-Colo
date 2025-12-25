@@ -1,481 +1,494 @@
+from typing import NamedTuple, List
 from BaseClasses import Location
 from .Strings import Locations, Regions
 from typing import Dict, List, TYPE_CHECKING
 from .Options import ColosseumOptions, ColosseumSanity
+from .Helpers import PCRamData, PCLocType
+from .client.game_address import *
+from .client.constants import *
 
 if TYPE_CHECKING:
     from . import ColosseumWorld
 
+class PCLocData(NamedTuple):
+    ram_info: PCRamData = None
+    map_id: int = -2 # To ensure that if a map ID is not important it is not unnecessarily checked in the client
+    code: List[int] = [-1]
+    type: PCLocType = PCLocType.NONE
+
 class ColosseumLocation(Location):
     game: str = "Pokemon Colosseum"
 
-start_locations = [
-    Locations.Misc.espeon_umbreon
-]
+start_locations: Dict[str, PCLocData] = {
+    Locations.Misc.espeon_umbreon: PCLocData(ram_info=PCRamData(MAP_ID_ADDR), type=PCLocType.START, map_id=OUTSKIRT_STAND_ID)
+}
 
-outside_city_locations = [
-    Locations.Trainers.willie
-]
+outside_city_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.willie: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_1_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=OUTSKIRT_STAND_ID)
+}
 
-phenac_locations = [
-    Locations.Misc.rui,
-    Locations.Misc.tm41,
-    Locations.Trainers.folly,
-    Locations.Trainers.wakin,
-    Locations.Trainers.folly_1,
-    Locations.Trainers.trudly,
-    Locations.Trainers.kaid,
-    Locations.Trainers.drig,
-    Locations.ShadowPokemon.makuhita_capture,
-    Locations.Chests.phenac_chest_1
-]
+phenac_locations: Dict[str, PCLocData] = {
+    # Not sending: Rui, Folly_1, Makuhita, Trudly, chest_1, Kaid
+    Locations.Misc.rui: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_4_OFFSET, bit_pos=5), type=PCLocType.EVENT, map_id=PHENAC_CITY_ID),
+    Locations.Misc.tm41: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=0), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID, code=[NO_DISABLE]),
+    Locations.Trainers.folly: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_4_OFFSET, bit_pos=4), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID),
+    Locations.Trainers.wakin: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_2_OFFSET, bit_pos=6), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID),
+    Locations.Trainers.folly_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_3_OFFSET, bit_pos=6), type=PCLocType.TRAINER, map_id=MAYOR_HOUSE_ID),
+    Locations.Trainers.trudly: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_3_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=MAYOR_HOUSE_ID),
+    Locations.Trainers.kaid: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=0), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID),
+    Locations.Trainers.drig: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_5_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID),
+    Locations.ShadowPokemon.makuhita_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=SHADOW_1_CATCH_OFFSET, bit_pos=4), type=PCLocType.SHADOW, map_id=MAYOR_HOUSE_ID),
+    Locations.Chests.phenac_chest_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=ITEM_COLLECTION_1, bit_pos=4), type=PCLocType.CHEST, map_id=PHENAC_CITY_ID)
+}
 
-pregym_locations = [
-    Locations.Trainers.botan,
-    Locations.Trainers.liqui,
-    Locations.Trainers.dugo,
-    Locations.Trainers.gwin,
-    Locations.Trainers.justy
-]
+pregym_locations: Dict[str, PCLocData] = {
+    # Not sending: Gwin
+    Locations.Misc.complete_pre_gym: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=PREGYM_ID, code=[NO_DISABLE]),
+    Locations.Trainers.botan: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=4), type=PCLocType.TRAINER, map_id=PREGYM_ID),
+    Locations.Trainers.liqui: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=5), type=PCLocType.TRAINER, map_id=PREGYM_ID),
+    Locations.Trainers.dugo: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=6), type=PCLocType.TRAINER, map_id=PREGYM_ID),
+    Locations.Trainers.gwin: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=PREGYM_ID),
+    Locations.Trainers.justy: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET_2, bit_pos=6), type=PCLocType.TRAINER, map_id=PREGYM_ID)
+}
 
-phenac_colosseum_r1_locations = [
-    Locations.Misc.tm18,
-    Locations.ColosseumTrainers.phenac_r1_1,
-    Locations.ColosseumTrainers.phenac_r1_2,
-    Locations.ColosseumTrainers.phenac_r1_3,
-    Locations.ColosseumTrainers.phenac_r1_4,
-    Locations.ColosseumTrainers.phenac_r1_win
-]
+phenac_colosseum_r1_locations: Dict[str, PCLocData] = {
+    Locations.Misc.tm18: None,
+    Locations.ColosseumTrainers.phenac_r1_1: None,
+    Locations.ColosseumTrainers.phenac_r1_2: None,
+    Locations.ColosseumTrainers.phenac_r1_3: None,
+    Locations.ColosseumTrainers.phenac_r1_4: None,
+    Locations.ColosseumTrainers.phenac_r1_win: None
+}
 
-phenac_colosseum_r2_locations = [
-    Locations.Misc.tm11,
-    Locations.ColosseumTrainers.phenac_r2_1,
-    Locations.ColosseumTrainers.phenac_r2_2,
-    Locations.ColosseumTrainers.phenac_r2_3,
-    Locations.ColosseumTrainers.phenac_r2_4,
-    Locations.ColosseumTrainers.phenac_r2_win
-]
+phenac_colosseum_r2_locations: Dict[str, PCLocData] = {
+    Locations.Misc.tm11: None,
+    Locations.ColosseumTrainers.phenac_r2_1: None,
+    Locations.ColosseumTrainers.phenac_r2_2: None,
+    Locations.ColosseumTrainers.phenac_r2_3: None,
+    Locations.ColosseumTrainers.phenac_r2_4: None,
+    Locations.ColosseumTrainers.phenac_r2_win: None
+}
 
-phenac_colosseum_r3_locations = [
-    Locations.Misc.tm19,
-    Locations.ColosseumTrainers.phenac_r3_1,
-    Locations.ColosseumTrainers.phenac_r3_2,
-    Locations.ColosseumTrainers.phenac_r3_3,
-    Locations.ColosseumTrainers.phenac_r3_4,
-    Locations.ColosseumTrainers.phenac_r3_win
-]
+phenac_colosseum_r3_locations: Dict[str, PCLocData] = {
+    Locations.Misc.tm19: None,
+    Locations.ColosseumTrainers.phenac_r3_1: None,
+    Locations.ColosseumTrainers.phenac_r3_2: None,
+    Locations.ColosseumTrainers.phenac_r3_3: None,
+    Locations.ColosseumTrainers.phenac_r3_4: None,
+    Locations.ColosseumTrainers.phenac_r3_win: None
+}
 
-phenac_colosseum_r4_locations = [
-    Locations.Misc.tm22,
-    Locations.ColosseumTrainers.phenac_r4_1,
-    Locations.ColosseumTrainers.phenac_r4_2,
-    Locations.ColosseumTrainers.phenac_r4_3,
-    Locations.ColosseumTrainers.phenac_r4_4,
-    Locations.ColosseumTrainers.phenac_r4_win
-]
+phenac_colosseum_r4_locations: Dict[str, PCLocData] = {
+    Locations.Misc.tm22: None,
+    Locations.ColosseumTrainers.phenac_r4_1: None,
+    Locations.ColosseumTrainers.phenac_r4_2: None,
+    Locations.ColosseumTrainers.phenac_r4_3: None,
+    Locations.ColosseumTrainers.phenac_r4_4: None,
+    Locations.ColosseumTrainers.phenac_r4_win: None
+}
 
-phenac_colosseum_locations = phenac_colosseum_r1_locations + phenac_colosseum_r2_locations + phenac_colosseum_r3_locations + phenac_colosseum_r4_locations
+phenac_colosseum_locations = phenac_colosseum_r1_locations | phenac_colosseum_r2_locations | phenac_colosseum_r3_locations | phenac_colosseum_r4_locations
 
-pyrite_locations = [
-    Locations.Trainers.emok,
-    Locations.Trainers.calda,
-    Locations.Trainers.lon,
-    Locations.Trainers.vant,
-    Locations.Trainers.nover,
-    Locations.Trainers.diogo,
-    Locations.Trainers.leba,
-    Locations.Trainers.divel,
-    Locations.Trainers.cail,
-    Locations.ShadowPokemon.slugma_capture,
-    Locations.ShadowPokemon.misdreavus_capture,
-    Locations.ShadowPokemon.noctowl_capture,
-    Locations.ShadowPokemon.flaffy_capture,
-    Locations.ShadowPokemon.skiploom_capture,
-    Locations.ShadowPokemon.quagsire_capture,
-    Locations.ShadowPokemon.furret_capture
-]
+pyrite_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.emok: None,
+    Locations.Trainers.calda: None,
+    Locations.Trainers.lon: None,
+    Locations.Trainers.vant: None,
+    Locations.Trainers.nover: None,
+    Locations.Trainers.diogo: None,
+    Locations.Trainers.leba: None,
+    Locations.Trainers.divel: None,
+    Locations.Trainers.cail: None,
+    Locations.ShadowPokemon.slugma_capture: None,
+    Locations.ShadowPokemon.misdreavus_capture: None,
+    Locations.ShadowPokemon.noctowl_capture: None,
+    Locations.ShadowPokemon.flaffy_capture: None,
+    Locations.ShadowPokemon.skiploom_capture: None,
+    Locations.ShadowPokemon.quagsire_capture: None,
+    Locations.ShadowPokemon.furret_capture: None
+}
 
-pyrite_2_locations = [
-    Locations.Misc.jail_key,
-    Locations.Misc.elevator_key,
-    Locations.Trainers.hader
-]
+pyrite_2_locations: Dict[str, PCLocData] = {
+    Locations.Misc.jail_key: None,
+    Locations.Misc.elevator_key: None,
+    Locations.Trainers.hader: None
+}
 
-construction_locations = [
-    Locations.Misc.windmill_gear
-]
+construction_locations: Dict[str, PCLocData] = {
+    Locations.Misc.windmill_gear: None
+}
 
-pyrite_colosseum_locations = [
-    Locations.Misc.tm06,
-    Locations.ColosseumTrainers.pyrite_r0_1,
-    Locations.ColosseumTrainers.pyrite_r0_2,
-    Locations.ColosseumTrainers.pyrite_r0_3,
-    Locations.ColosseumTrainers.pyrite_r0_4,
-    Locations.ColosseumTrainers.pyrite_r0_win
-]
+pyrite_colosseum_locations: Dict[str, PCLocData] = {
+    Locations.Misc.tm06: None,
+    Locations.ColosseumTrainers.pyrite_r0_1: None,
+    Locations.ColosseumTrainers.pyrite_r0_2: None,
+    Locations.ColosseumTrainers.pyrite_r0_3: None,
+    Locations.ColosseumTrainers.pyrite_r0_4: None,
+    Locations.ColosseumTrainers.pyrite_r0_win: None
+}
 
-pyrite_building_1f_locations = [
-    Locations.Misc.ein_file_h,
-    Locations.Trainers.nore,
-    Locations.Trainers.kai,
-    Locations.Trainers.pike,
-    Locations.ShadowPokemon.yanma_capture,
-    Locations.Chests.pyrite_building_chest_3
-]
+pyrite_building_1f_locations: Dict[str, PCLocData] = {
+    Locations.Misc.ein_file_h: None,
+    Locations.Trainers.nore: None,
+    Locations.Trainers.kai: None,
+    Locations.Trainers.pike: None,
+    Locations.ShadowPokemon.yanma_capture: None,
+    Locations.Chests.pyrite_building_chest_3: None
+}
 
-pyrite_building_2f_locations = [
-    Locations.Trainers.geats,
-    Locations.Trainers.geare,
-    Locations.Trainers.loba,
-    Locations.Trainers.akmen,
-    Locations.Chests.pyrite_building_chest_1
-]
+pyrite_building_2f_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.geats: None,
+    Locations.Trainers.geare: None,
+    Locations.Trainers.loba: None,
+    Locations.Trainers.akmen: None,
+    Locations.Chests.pyrite_building_chest_1: None
+}
 
-pyrite_building_3f_locations = [
-    Locations.Trainers.raleen,
-    Locations.Trainers.toti,
-    Locations.Trainers.elidi,
-    Locations.Chests.pyrite_building_chest_2
-]
+pyrite_building_3f_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.raleen: None,
+    Locations.Trainers.toti: None,
+    Locations.Trainers.elidi: None,
+    Locations.Chests.pyrite_building_chest_2: None
+}
 
-pyrite_building_roof_locations = [
-    Locations.Misc.ein_file_s,
-    Locations.Trainers.reath,
-    Locations.Trainers.ferma,
-    Locations.Trainers.doken,
-    Locations.ShadowPokemon.remoraid_capture,
-    Locations.ShadowPokemon.mantine_capture,
-    Locations.ShadowPokemon.qwilfish_capture
-]
+pyrite_building_roof_locations: Dict[str, PCLocData] = {
+    Locations.Misc.ein_file_s: None,
+    Locations.Trainers.reath: None,
+    Locations.Trainers.ferma: None,
+    Locations.Trainers.doken: None,
+    Locations.ShadowPokemon.remoraid_capture: None,
+    Locations.ShadowPokemon.mantine_capture: None,
+    Locations.ShadowPokemon.qwilfish_capture: None
+}
 
-pyrite_building_locations = pyrite_building_1f_locations + pyrite_building_2f_locations + pyrite_building_3f_locations + pyrite_building_roof_locations
+pyrite_building_locations = pyrite_building_1f_locations | pyrite_building_2f_locations | pyrite_building_3f_locations | pyrite_building_roof_locations
 
-pyrite_cave_entrance_locations = [
-    Locations.Trainers.simes,
-    Locations.Chests.pyrite_cave_chest_1,
-    Locations.Chests.pyrite_cave_chest_2
-]
+pyrite_cave_entrance_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.simes: None,
+    Locations.Chests.pyrite_cave_chest_1: None,
+    Locations.Chests.pyrite_cave_chest_2: None
+}
 
-pyrite_cave_1f_locations = [
-    Locations.Trainers.rehan,
-    Locations.Trainers.noxy,
-    Locations.Chests.pyrite_cave_chest_3
-]
+pyrite_cave_1f_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.rehan: None,
+    Locations.Trainers.noxy: None,
+    Locations.Chests.pyrite_cave_chest_3: None
+}
 
-pyrite_cave_b1f_locations = [
-    Locations.Trainers.maiz,
-    Locations.Trainers.twan,
-    Locations.Trainers.valen,
-    Locations.ShadowPokemon.meditite_capture,
-    Locations.Chests.pyrite_cave_chest_4
-]
+pyrite_cave_b1f_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.maiz: None,
+    Locations.Trainers.twan: None,
+    Locations.Trainers.valen: None,
+    Locations.ShadowPokemon.meditite_capture: None,
+    Locations.Chests.pyrite_cave_chest_4: None
+}
 
-pyrite_cave_sewers_locations = [
-    Locations.Trainers.sosh,
-    Locations.Trainers.derid,
-    Locations.ShadowPokemon.dunsparce_capture
-]
+pyrite_cave_sewers_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.sosh: None,
+    Locations.Trainers.derid: None,
+    Locations.ShadowPokemon.dunsparce_capture: None
+}
 
-pyrite_cave_after_sewers_locations = [
-    Locations.Trainers.evat,
-    Locations.Trainers.zalo,
-    Locations.ShadowPokemon.swablu_capture
-]
+pyrite_cave_after_sewers_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.evat: None,
+    Locations.Trainers.zalo: None,
+    Locations.ShadowPokemon.swablu_capture: None
+}
 
-pyrite_cave_north_sewers_locations = [
-    Locations.Trainers.meli,
-    Locations.Trainers.mela,
-    Locations.Trainers.sema,
-    Locations.Chests.pyrite_cave_chest_5,
-    Locations.Chests.pyrite_cave_chest_6,
-    Locations.Chests.pyrite_cave_chest_7,
-    Locations.Chests.pyrite_cave_chest_8
-]
+pyrite_cave_north_sewers_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.meli: None,
+    Locations.Trainers.mela: None,
+    Locations.Trainers.sema: None,
+    Locations.Chests.pyrite_cave_chest_5: None,
+    Locations.Chests.pyrite_cave_chest_6: None,
+    Locations.Chests.pyrite_cave_chest_7: None,
+    Locations.Chests.pyrite_cave_chest_8: None
+}
 
-pyrite_cave_miror_hideout = [
-    Locations.Misc.plusle,
-    Locations.Trainers.mirorb,
-    Locations.ShadowPokemon.sudowoodo_capture,
-    Locations.Chests.pyrite_cave_chest_9,
-    Locations.Chests.pyrite_cave_chest_10
-]
+pyrite_cave_miror_hideout: Dict[str, PCLocData] = {
+    Locations.Misc.plusle: None,
+    Locations.Trainers.mirorb: None,
+    Locations.ShadowPokemon.sudowoodo_capture: None,
+    Locations.Chests.pyrite_cave_chest_9: None,
+    Locations.Chests.pyrite_cave_chest_10: None
+}
 
-pyrite_cave_extra = [
-    Locations.Trainers.mirakleb
-]
+pyrite_cave_extra: Dict[str, PCLocData] = {
+    Locations.Trainers.mirakleb: None
+}
 
-pyrite_cave_locations = pyrite_cave_entrance_locations + pyrite_cave_1f_locations + pyrite_cave_b1f_locations + pyrite_cave_sewers_locations + pyrite_cave_after_sewers_locations + pyrite_cave_north_sewers_locations + pyrite_cave_miror_hideout
+pyrite_cave_locations = pyrite_cave_entrance_locations | pyrite_cave_1f_locations | pyrite_cave_b1f_locations | pyrite_cave_sewers_locations | pyrite_cave_after_sewers_locations | pyrite_cave_north_sewers_locations | pyrite_cave_miror_hideout
 
-# Array[Bayleaf, Quilava, Croconaw]
-starter_trainer_locations = [
-    Locations.Trainers.verde,
-    Locations.Trainers.rosso,
-    Locations.Trainers.bluno
-]
+# Array{Bayleaf, Quilava, Croconaw}
+starter_trainer_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.verde: None,
+    Locations.Trainers.rosso: None,
+    Locations.Trainers.bluno: None
+}
 
-starter_pokemon_captured = [
-    Locations.ShadowPokemon.bayleaf_capture,
-    Locations.ShadowPokemon.quilava_capture,
-    Locations.ShadowPokemon.croconaw_capture
-]
+starter_pokemon_captured: Dict[str, PCLocData] = {
+    Locations.ShadowPokemon.bayleaf_capture: None,
+    Locations.ShadowPokemon.quilava_capture: None,
+    Locations.ShadowPokemon.croconaw_capture: None
+}
 
-starter_pokemon_purified = [
-    Locations.ShadowPokemon.bayleaf_purify,
-    Locations.ShadowPokemon.quilava_purify,
-    Locations.ShadowPokemon.croconaw_purify
-]
+starter_pokemon_purified: Dict[str, PCLocData] = {
+    Locations.ShadowPokemon.bayleaf_purify: None,
+    Locations.ShadowPokemon.quilava_purify: None,
+    Locations.ShadowPokemon.croconaw_purify: None
+}
 
-starter_trainer_locations_1 = [
-    Locations.Trainers.verde_1,
-    Locations.Trainers.rosso_1,
-    Locations.Trainers.bluno_1
-]
+starter_trainer_locations_1: Dict[str, PCLocData] = {
+    Locations.Trainers.verde_1: None,
+    Locations.Trainers.rosso_1: None,
+    Locations.Trainers.bluno_1: None
+}
 
-agate_locations = [
-    Locations.Misc.small_tablet,
-    Locations.Misc.master_ball,
-    Locations.Trainers.skof,
-    Locations.Trainers.dury,
-    Locations.Chests.agate_chest_1,
-    Locations.Chests.agate_chest_2,
-    Locations.Chests.agate_chest_3,
-    Locations.Chests.agate_chest_4,
-]
+agate_locations: Dict[str, PCLocData] = {
+    Locations.Misc.small_tablet: None,
+    Locations.Misc.master_ball: None,
+    Locations.Trainers.skof: None,
+    Locations.Trainers.dury: None,
+    Locations.Chests.agate_chest_1: None,
+    Locations.Chests.agate_chest_2: None,
+    Locations.Chests.agate_chest_3: None,
+    Locations.Chests.agate_chest_4: None
+}
 
-agate_locations_2 = [
-    Locations.Misc.ein_file_c,
-    Locations.Trainers.doven,
-    Locations.Trainers.silton,
-    Locations.Trainers.kass,
-    Locations.Trainers.skrub,
-    Locations.ShadowPokemon.hitmontop_capture
-]
+agate_locations_2: Dict[str, PCLocData] = {
+    Locations.Misc.ein_file_c: None,
+    Locations.Trainers.doven: None,
+    Locations.Trainers.silton: None,
+    Locations.Trainers.kass: None,
+    Locations.Trainers.skrub: None,
+    Locations.ShadowPokemon.hitmontop_capture: None
+}
 
-agate_locations = agate_locations + agate_locations_2
+agate_locations = agate_locations | agate_locations_2
 
-relic_stone_locations = [
-    Locations.ShadowPokemon.makuhita_purify,
-    Locations.ShadowPokemon.slugma_purify,
-    Locations.ShadowPokemon.noctowl_purify,
-    Locations.ShadowPokemon.flaffy_purify,
-    Locations.ShadowPokemon.skiploom_purify,
-    Locations.ShadowPokemon.quagsire_purify,
-    Locations.ShadowPokemon.misdreavus_purify,
-    Locations.ShadowPokemon.furret_purify,
-    Locations.ShadowPokemon.yanma_purify,
-    Locations.ShadowPokemon.remoraid_purify,
-    Locations.ShadowPokemon.mantine_purify,
-    Locations.ShadowPokemon.qwilfish_purify,
-    Locations.ShadowPokemon.meditite_purify,
-    Locations.ShadowPokemon.dunsparce_purify,
-    Locations.ShadowPokemon.swablu_purify,
-    Locations.ShadowPokemon.sudowoodo_purify,
-    Locations.ShadowPokemon.hitmontop_purify,
-    Locations.ShadowPokemon.entei_purify,
-    Locations.ShadowPokemon.ledian_purify,
-    Locations.ShadowPokemon.suicune_purify,
-    Locations.ShadowPokemon.gligar_purify,
-    Locations.ShadowPokemon.stantler_purify,
-    Locations.ShadowPokemon.piloswine_purify,
-    Locations.ShadowPokemon.sneasel_purify,
-    Locations.ShadowPokemon.aipom_purify,
-    Locations.ShadowPokemon.murkrow_purify,
-    Locations.ShadowPokemon.forretress_purify,
-    Locations.ShadowPokemon.ariados_purify,
-    Locations.ShadowPokemon.granbull_purify,
-    Locations.ShadowPokemon.vibrava_purify,
-    Locations.ShadowPokemon.raikou_purify,
-    Locations.ShadowPokemon.sunflora_purify,
-    Locations.ShadowPokemon.delibird_purify,
-    Locations.ShadowPokemon.heracross_purify,
-    Locations.ShadowPokemon.skarmory_purify,
-    Locations.ShadowPokemon.miltank_purify,
-    Locations.ShadowPokemon.absol_purify,
-    Locations.ShadowPokemon.houndoom_purify,
-    Locations.ShadowPokemon.tropius_purify,
-    Locations.ShadowPokemon.metagross_purify,
-    Locations.ShadowPokemon.tyranitar_purify
-]
+relic_stone_locations: Dict[str, PCLocData] = {
+    Locations.ShadowPokemon.makuhita_purify: None,
+    Locations.ShadowPokemon.slugma_purify: None,
+    Locations.ShadowPokemon.noctowl_purify: None,
+    Locations.ShadowPokemon.flaffy_purify: None,
+    Locations.ShadowPokemon.skiploom_purify: None,
+    Locations.ShadowPokemon.quagsire_purify: None,
+    Locations.ShadowPokemon.misdreavus_purify: None,
+    Locations.ShadowPokemon.furret_purify: None,
+    Locations.ShadowPokemon.yanma_purify: None,
+    Locations.ShadowPokemon.remoraid_purify: None,
+    Locations.ShadowPokemon.mantine_purify: None,
+    Locations.ShadowPokemon.qwilfish_purify: None,
+    Locations.ShadowPokemon.meditite_purify: None,
+    Locations.ShadowPokemon.dunsparce_purify: None,
+    Locations.ShadowPokemon.swablu_purify: None,
+    Locations.ShadowPokemon.sudowoodo_purify: None,
+    Locations.ShadowPokemon.hitmontop_purify: None,
+    Locations.ShadowPokemon.entei_purify: None,
+    Locations.ShadowPokemon.ledian_purify: None,
+    Locations.ShadowPokemon.suicune_purify: None,
+    Locations.ShadowPokemon.gligar_purify: None,
+    Locations.ShadowPokemon.stantler_purify: None,
+    Locations.ShadowPokemon.piloswine_purify: None,
+    Locations.ShadowPokemon.sneasel_purify: None,
+    Locations.ShadowPokemon.aipom_purify: None,
+    Locations.ShadowPokemon.murkrow_purify: None,
+    Locations.ShadowPokemon.forretress_purify: None,
+    Locations.ShadowPokemon.ariados_purify: None,
+    Locations.ShadowPokemon.granbull_purify: None,
+    Locations.ShadowPokemon.vibrava_purify: None,
+    Locations.ShadowPokemon.raikou_purify: None,
+    Locations.ShadowPokemon.sunflora_purify: None,
+    Locations.ShadowPokemon.delibird_purify: None,
+    Locations.ShadowPokemon.heracross_purify: None,
+    Locations.ShadowPokemon.skarmory_purify: None,
+    Locations.ShadowPokemon.miltank_purify: None,
+    Locations.ShadowPokemon.absol_purify: None,
+    Locations.ShadowPokemon.houndoom_purify: None,
+    Locations.ShadowPokemon.tropius_purify: None,
+    Locations.ShadowPokemon.metagross_purify: None,
+    Locations.ShadowPokemon.tyranitar_purify: None
+}
 
-mt_battle_locations = [
-    Locations.Misc.f_disk,
-    Locations.Trainers.turo,
-    Locations.Trainers.drovic,
-    Locations.Trainers.kimit,
-    Locations.Trainers.riden,
-    Locations.Trainers.telia,
-    Locations.Trainers.nortz,
-    Locations.Trainers.weeg,
-    Locations.Trainers.kison,
-    Locations.Trainers.berin,
-    Locations.Trainers.dakim,
-    Locations.Trainers.aidel,
-    Locations.ShadowPokemon.entei_capture,
-    Locations.Chests.mt_battle_chest_1
-]
+mt_battle_locations: Dict[str, PCLocData] = {
+    Locations.Misc.f_disk: None,
+    Locations.Trainers.turo: None,
+    Locations.Trainers.drovic: None,
+    Locations.Trainers.kimit: None,
+    Locations.Trainers.riden: None,
+    Locations.Trainers.telia: None,
+    Locations.Trainers.nortz: None,
+    Locations.Trainers.weeg: None,
+    Locations.Trainers.kison: None,
+    Locations.Trainers.berin: None,
+    Locations.Trainers.dakim: None,
+    Locations.Trainers.aidel: None,
+    Locations.ShadowPokemon.entei_capture: None,
+    Locations.Chests.mt_battle_chest_1: None
+}
 
-under_1_locations = [
-    Locations.Misc.powerup_part,
-    Locations.Trainers.zada,
-    Locations.Trainers.gurks,
-    Locations.Chests.under_chest_1
-]
+under_1_locations: Dict[str, PCLocData] = {
+    Locations.Misc.powerup_part: None,
+    Locations.Trainers.zada: None,
+    Locations.Trainers.gurks: None,
+    Locations.Chests.under_chest_1: None
+}
 
-under_2_locations = [
-    Locations.Misc.r_disk,
-    Locations.Trainers.kloak,
-    Locations.Trainers.dagur,
-    Locations.ShadowPokemon.ledian_capture
-]
+under_2_locations: Dict[str, PCLocData] = {
+    Locations.Misc.r_disk: None,
+    Locations.Trainers.kloak: None,
+    Locations.Trainers.dagur: None,
+    Locations.ShadowPokemon.ledian_capture: None
+}
 
-under_forward_locations = [
+under_forward_locations: Dict[str, PCLocData] = {
 
-]
+}
 
-under_right_locations = [
-    Locations.Misc.ein_file_f,
-    Locations.Misc.subway_key,
-    Locations.Trainers.venus,
-    Locations.Trainers.frena,
-    Locations.Trainers.liaks,
-    Locations.Trainers.lonia,
-    Locations.Trainers.nelis,
-    Locations.ShadowPokemon.suicune_capture,
-    Locations.ShadowPokemon.gligar_capture,
-    Locations.ShadowPokemon.stantler_capture,
-    Locations.ShadowPokemon.piloswine_capture,
-    Locations.ShadowPokemon.sneasel_capture,
-    Locations.Chests.under_chest_2,
-    Locations.Chests.under_chest_3,
-    Locations.Chests.under_chest_4,
-    Locations.Chests.under_chest_5,
-    Locations.Chests.under_chest_6,
-    Locations.Chests.under_chest_7
-]
+under_right_locations: Dict[str, PCLocData] = {
+    Locations.Misc.ein_file_f: None,
+    Locations.Misc.subway_key: None,
+    Locations.Trainers.venus: None,
+    Locations.Trainers.frena: None,
+    Locations.Trainers.liaks: None,
+    Locations.Trainers.lonia: None,
+    Locations.Trainers.nelis: None,
+    Locations.ShadowPokemon.suicune_capture: None,
+    Locations.ShadowPokemon.gligar_capture: None,
+    Locations.ShadowPokemon.stantler_capture: None,
+    Locations.ShadowPokemon.piloswine_capture: None,
+    Locations.ShadowPokemon.sneasel_capture: None,
+    Locations.Chests.under_chest_2: None,
+    Locations.Chests.under_chest_3: None,
+    Locations.Chests.under_chest_4: None,
+    Locations.Chests.under_chest_5: None,
+    Locations.Chests.under_chest_6: None,
+    Locations.Chests.under_chest_7: None
+}
 
-under_up_locations = [
-    Locations.Chests.under_chest_8
-]
+under_up_locations: Dict[str, PCLocData] = {
+    Locations.Chests.under_chest_8: None
+}
 
-under_locations = under_1_locations + under_2_locations + under_forward_locations + under_right_locations + under_up_locations
+under_locations = under_1_locations | under_2_locations | under_right_locations | under_up_locations
 
-lab_subway_locations = [
-    Locations.Misc.maingate_key,
-    Locations.Chests.lab_chest_2
-]
+lab_subway_locations: Dict[str, PCLocData] = {
+    Locations.Misc.maingate_key: None,
+    Locations.Chests.lab_chest_2: None
+}
 
-lab_main_locations = [
-    Locations.Misc.dna_sample_1,
-    Locations.Misc.down_st_key,
-    Locations.Trainers.lethco,
-    Locations.Trainers.cole,
-    Locations.Trainers.odlow,
-    Locations.Trainers.coren,
-    Locations.ShadowPokemon.aipom_capture,
-]
+lab_main_locations: Dict[str, PCLocData] = {
+    Locations.Misc.dna_sample_1: None,
+    Locations.Misc.down_st_key: None,
+    Locations.Trainers.lethco: None,
+    Locations.Trainers.cole: None,
+    Locations.Trainers.odlow: None,
+    Locations.Trainers.coren: None,
+    Locations.ShadowPokemon.aipom_capture: None
+}
 
-lab_main_after_key_locations = [
-    Locations.Misc.dna_sample_2,
-    Locations.Misc.dna_sample_3,
-    Locations.Misc.data_rom, # After DNA Puzzle
-    Locations.Trainers.lare,
-    Locations.Trainers.vana,
-    Locations.Trainers.lesar,
-    Locations.Trainers.tanie,
-    Locations.Trainers.dubik,
-    Locations.Trainers.kotan,
-    Locations.Trainers.remil,
-    Locations.Trainers.skrub_1, # After DNA Puzzle
-    Locations.Trainers.ein, # After DNA Puzzle
-    Locations.ShadowPokemon.murkrow_capture,
-    Locations.ShadowPokemon.forretress_capture,
-    Locations.ShadowPokemon.ariados_capture,
-    Locations.ShadowPokemon.granbull_capture,
-    Locations.ShadowPokemon.vibrava_capture,
-    Locations.ShadowPokemon.raikou_capture,
-    Locations.Chests.lab_chest_6,
-    Locations.Chests.lab_chest_7 # Afer DNA Puzzle
-]
+lab_main_after_key_locations: Dict[str, PCLocData] = {
+    Locations.Misc.dna_sample_2: None,
+    Locations.Misc.dna_sample_3: None,
+    Locations.Misc.data_rom: None, # After DNA Puzzle
+    Locations.Trainers.lare: None,
+    Locations.Trainers.vana: None,
+    Locations.Trainers.lesar: None,
+    Locations.Trainers.tanie: None,
+    Locations.Trainers.dubik: None,
+    Locations.Trainers.kotan: None,
+    Locations.Trainers.remil: None,
+    Locations.Trainers.skrub_1: None, # After DNA Puzzle
+    Locations.Trainers.ein: None, # After DNA Puzzle
+    Locations.ShadowPokemon.murkrow_capture: None,
+    Locations.ShadowPokemon.forretress_capture: None,
+    Locations.ShadowPokemon.ariados_capture: None,
+    Locations.ShadowPokemon.granbull_capture: None,
+    Locations.ShadowPokemon.vibrava_capture: None,
+    Locations.ShadowPokemon.raikou_capture: None,
+    Locations.Chests.lab_chest_6: None,
+    Locations.Chests.lab_chest_7: None # Afer DNA Puzzle
+}
 
-lab_shutter_locations = [
-    Locations.Misc.card_key,
-    Locations.Trainers.myron,
-    Locations.Chests.lab_chest_3,
-    Locations.Chests.lab_chest_4,
-    Locations.Chests.lab_chest_5
-]
+lab_shutter_locations: Dict[str, PCLocData] = {
+    Locations.Misc.card_key: None,
+    Locations.Trainers.myron: None,
+    Locations.Chests.lab_chest_3: None,
+    Locations.Chests.lab_chest_4: None,
+    Locations.Chests.lab_chest_5: None
+}
 
-lab_outside_gate_locations = [
-    Locations.Chests.lab_chest_1
-]
+lab_outside_gate_locations: Dict[str, PCLocData] = {
+    Locations.Chests.lab_chest_1: None
+}
 
-lab_locations = lab_outside_gate_locations + lab_subway_locations + lab_main_locations + lab_shutter_locations + lab_main_after_key_locations
+lab_locations = lab_outside_gate_locations | lab_subway_locations | lab_main_locations | lab_shutter_locations | lab_main_after_key_locations
 
-tower_pregate_locations = [
-    Locations.Misc.red_badge,
-    Locations.Misc.grn_badge,
-    Locations.Misc.blu_badge,
-    Locations.Misc.ylw_badge,
-    Locations.Trainers.bopen,
-    Locations.Trainers.arton,
-    Locations.Trainers.baila,
-    Locations.Trainers.mirorb_1,
-    Locations.Trainers.dakim_1,
-    Locations.Trainers.venus_1,
-    Locations.Trainers.ein_1,
-    Locations.ShadowPokemon.delibird_capture,
-    Locations.ShadowPokemon.sunflora_capture,
-]
+tower_pregate_locations: Dict[str, PCLocData] = {
+    Locations.Misc.red_badge: None,
+    Locations.Misc.grn_badge: None,
+    Locations.Misc.blu_badge: None,
+    Locations.Misc.ylw_badge: None,
+    Locations.Trainers.bopen: None,
+    Locations.Trainers.arton: None,
+    Locations.Trainers.baila: None,
+    Locations.Trainers.mirorb_1: None,
+    Locations.Trainers.dakim_1: None,
+    Locations.Trainers.venus_1: None,
+    Locations.Trainers.ein_1: None,
+    Locations.ShadowPokemon.delibird_capture: None,
+    Locations.ShadowPokemon.sunflora_capture: None
+}
 
-tower_postgate_locations = [
-    Locations.Trainers.dioge,
-    Locations.Trainers.klest,
-    Locations.Trainers.aline,
-    Locations.Trainers.givern,
-    Locations.Trainers.elose,
-    Locations.Trainers.luper,
-    Locations.Trainers.trus,
-    Locations.Trainers.kevel,
-    Locations.Trainers.rugen,
-    Locations.Trainers.gonzap,
-    Locations.ShadowPokemon.heracross_capture,
-    Locations.ShadowPokemon.skarmory_capture
-]
+tower_postgate_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.dioge: None,
+    Locations.Trainers.klest: None,
+    Locations.Trainers.aline: None,
+    Locations.Trainers.givern: None,
+    Locations.Trainers.elose: None,
+    Locations.Trainers.luper: None,
+    Locations.Trainers.trus: None,
+    Locations.Trainers.kevel: None,
+    Locations.Trainers.rugen: None,
+    Locations.Trainers.gonzap: None,
+    Locations.ShadowPokemon.heracross_capture: None,
+    Locations.ShadowPokemon.skarmory_capture: None
+}
 
-tower_colosseum_locations = [
-    Locations.Trainers.jomas,
-    Locations.Trainers.delan,
-    Locations.Trainers.nella,
-    Locations.Trainers.ston,
-    Locations.Trainers.nascour,
-    Locations.Trainers.evice,
-    Locations.ShadowPokemon.miltank_capture,
-    Locations.ShadowPokemon.absol_capture,
-    Locations.ShadowPokemon.houndoom_capture,
-    Locations.ShadowPokemon.tropius_capture,
-    Locations.ShadowPokemon.metagross_capture,
-    Locations.ShadowPokemon.tyranitar_capture
-]
+tower_colosseum_locations: Dict[str, PCLocData] = {
+    Locations.Trainers.jomas: None,
+    Locations.Trainers.delan: None,
+    Locations.Trainers.nella: None,
+    Locations.Trainers.ston: None,
+    Locations.Trainers.nascour: None,
+    Locations.Trainers.evice: None,
+    Locations.ShadowPokemon.miltank_capture: None,
+    Locations.ShadowPokemon.absol_capture: None,
+    Locations.ShadowPokemon.houndoom_capture: None,
+    Locations.ShadowPokemon.tropius_capture: None,
+    Locations.ShadowPokemon.metagross_capture: None,
+    Locations.ShadowPokemon.tyranitar_capture: None
+}
 
-realgam_tower_locations = tower_pregate_locations + tower_postgate_locations + tower_colosseum_locations
+realgam_tower_locations = tower_pregate_locations | tower_postgate_locations | tower_colosseum_locations
 
-postgame_purify = [
-    Locations.ShadowPokemon.smeargle_purify,
-    Locations.ShadowPokemon.ursaring_purify,
-    Locations.ShadowPokemon.shuckle_purify,
-    Locations.ShadowPokemon.togetic_purify
-]
+postgame_purify: Dict[str, PCLocData] = {
+    Locations.ShadowPokemon.smeargle_purify: None,
+    Locations.ShadowPokemon.ursaring_purify: None,
+    Locations.ShadowPokemon.shuckle_purify: None,
+    Locations.ShadowPokemon.togetic_purify: None
+}
 
 # Create helper variables to not have all_locations be so long
-starter_pokemon = starter_trainer_locations + starter_pokemon_captured + starter_pokemon_purified + starter_trainer_locations_1
-all_phenac = phenac_locations + pregym_locations + phenac_colosseum_locations
-all_pyrite = pyrite_locations + pyrite_colosseum_locations + pyrite_building_locations + pyrite_cave_locations
-all_agate = agate_locations + relic_stone_locations
+starter_pokemon = starter_trainer_locations | starter_pokemon_captured | starter_pokemon_purified | starter_trainer_locations_1
+all_phenac = phenac_locations | pregym_locations | phenac_colosseum_locations
+all_pyrite = pyrite_locations | pyrite_colosseum_locations | pyrite_building_locations | pyrite_cave_locations
+all_agate = agate_locations | relic_stone_locations
 all_postgame = postgame_purify
 
-all_locations = start_locations + starter_pokemon + outside_city_locations + all_phenac + all_pyrite + all_agate + all_postgame + construction_locations + mt_battle_locations + pyrite_cave_extra + pyrite_2_locations + under_locations + lab_locations + realgam_tower_locations
+all_locations = start_locations | starter_pokemon | outside_city_locations | all_phenac | all_pyrite | all_agate | all_postgame | construction_locations | mt_battle_locations | pyrite_cave_extra | pyrite_2_locations | under_locations | lab_locations | realgam_tower_locations
 
-regions_to_locations: Dict[str, List[str]] = {
+regions_to_locations: Dict[str, Dict[str, PCLocData]] = {
     Regions.menu: start_locations,
     Regions.phenac: [], # Dynamically modified
     Regions.phenac_city_pregym: pregym_locations,
@@ -517,25 +530,47 @@ regions_to_locations: Dict[str, List[str]] = {
     Regions.snagem: [],
 }
 
-def set_location_options(options: ColosseumOptions) -> Dict[str, List[str]]:
+# Local lists for dynamic allocation of Dicts
+starter_trainer_locations_list = [
+    Locations.Trainers.verde,
+    Locations.Trainers.rosso,
+    Locations.Trainers.bluno
+]
+
+starter_pokemon_captured_list = [
+    Locations.ShadowPokemon.bayleaf_capture,
+    Locations.ShadowPokemon.quilava_capture,
+    Locations.ShadowPokemon.croconaw_capture
+]
+
+starter_trainer_locations_1_list = [
+    Locations.Trainers.verde_1,
+    Locations.Trainers.rosso_1,
+    Locations.Trainers.bluno_1
+]
+
+def set_location_options(options: ColosseumOptions) -> Dict[str, Dict[str, PCLocData]]:
     local_regions = regions_to_locations.copy()
     local_phenac = phenac_locations.copy()
     local_relic = relic_stone_locations.copy()
     local_tower = tower_postgate_locations.copy()
     local_cave = pyrite_cave_locations.copy()
 
-    local_phenac.append(starter_trainer_locations[options.phenac_starter_choice])
-    local_phenac.append(starter_pokemon_captured[options.phenac_starter_choice])
-    local_relic.insert(1, starter_pokemon_purified[options.phenac_starter_choice])
-    local_relic.append(starter_pokemon_purified[options.phenac_starter_choice + 1 % 3])
-    local_relic.append(starter_pokemon_purified[options.phenac_starter_choice + 2 % 3])
-    local_tower.insert(1, starter_trainer_locations_1[options.phenac_starter_choice])
+    trainer = starter_trainer_locations_list[options.phenac_starter_choice]
+    starter = starter_pokemon_captured_list[options.phenac_starter_choice]
+    trainer_1 = starter_trainer_locations_1_list[options.phenac_starter_choice]
+
+    # Dynamic allocations of locally created Dicts for all game locations
+    local_phenac[trainer] = starter_trainer_locations[trainer]
+    local_phenac[starter] = starter_pokemon_captured[starter]
+    local_relic.update(starter_pokemon_purified)
+    local_tower[trainer_1] = starter_trainer_locations_1[trainer_1]
 
     if options.postgame_shadow_pokemon:
-        local_relic.extend(postgame_purify)
+        local_relic.update(postgame_purify)
 
     if options.mirakle_b: 
-        local_cave.extend(pyrite_cave_extra)
+        local_cave.update(pyrite_cave_extra)
 
     if options.colosseum_sanity != ColosseumSanity.option_off:
         local_regions[Regions.phenac_colosseum] = phenac_colosseum_r1_locations

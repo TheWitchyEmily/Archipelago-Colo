@@ -52,7 +52,7 @@ class ColosseumWorld(World):
     options_dataclass = ColosseumOptions
     options: ColosseumOptions
     item_name_to_id = {item["name"]: i + base_id for i, item in enumerate(all_items)}
-    location_name_to_id = {location: i + base_id for i, location in enumerate(all_locations)}
+    location_name_to_id = {location: i + base_id for i, location in enumerate(all_locations.keys())}
     settings: ClassVar[PokemonColosseumSettings]
     web = ColosseumWeb()
 

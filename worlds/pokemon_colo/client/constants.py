@@ -6,12 +6,6 @@ CLIENT_NAME = "Pokemon Colosseum Client"
 AP_LOGGER_NAME = "Client"
 AP_WORLD_VERSION_NAME = "APWorldVersion"
 
-# Memory constants
-IN_BATTLE = 0x8040836F
-BATTLE_WIN_CHECK = 0x8046D767
-STORY_FLAG_POINTER = 0x8047ADB9
-MAP_ID_POINTER = 0x80538DE0
-
 # Dolphin connection messages
 CONNECTION_REFUSED = "Detected a non-randomized ROM of Colosseum. Please close and load a different one. Retrying in 5 seconds..."
 CONNECTION_LOST = "Connection to Dolphin was lost. Please restart the emulator and load Colosseum."
@@ -24,3 +18,12 @@ AP_REFUSED = "AP refused to connect for one or more reasons, see above for detai
 # Loop wait timers
 WAIT_TIMER_LONG: float = 5
 WAIT_TIMER_SHORT: float = 0.125
+
+# Map constants for get_map_id
+OUTSKIRT_STAND_ID = 0
+PHENAC_CITY_ID = 1
+MAYOR_HOUSE_ID = 2
+PREGYM_ID = 3
+
+# Special location codes
+NO_DISABLE = 0x5 # For trainer location type, do not disable the scanning loop as another check relies on the same information

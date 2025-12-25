@@ -11,14 +11,20 @@ from .client.context.base_context import BaseContext, BaseCommandProcessor, logg
 from .Items import *
 from .Locations import *
 from .client.constants import *
-from .Helpers import StringByteFunction as sbf
+from .Helpers import StringByteFunction as sbf, PCLocType
 from .iso_helper.colo_rom import PCUSAPPatch
+from .client.game_address import *
+
+warned_locs = []
 
 def read_byte(console_addr: int):
     return int.from_bytes(dme.read_bytes(console_addr, 1))
 
 def read_short(console_addr: int):
     return int.from_bytes(dme.read_bytes(console_addr, 2))
+
+def ptr_addr(console_addr: int, ptr_offset: int) -> int:
+    return dme.follow_pointers(console_addr, [ptr_offset])
 
 def write_short(console_addr: int, value: int):
     dme.write_bytes(console_addr, value.to_bytes(2))
@@ -31,6 +37,9 @@ async def write_bytes_and_validate(addr: int, ram_offset: list[str] | None, curr
         dme.write_bytes(addr, curr_value)
     else:
         dme.write_bytes(dme.follow_pointers(addr, ram_offset), curr_value)
+
+def bits(byte: int):
+    return [byte >> i & 1 for i in range(8)]
 
 class PCCommandProcessor(BaseCommandProcessor):
     def _cmd_dolphin(self):
@@ -73,6 +82,7 @@ class PCContext(BaseContext):
         self.goal = None
         self.tower_unlock = None
         self.purify_unlock = None
+        self.trainer_win = False
 
     async def disconnect(self, allow_autoreconnect: bool = False):
         """
@@ -140,18 +150,105 @@ class PCContext(BaseContext):
         logger.error("Command not implemented - Currently gathering required debugging addresses")
         return
 
-    def check_trainer_fought(self) -> bool:
+    def hex_to_dec(self, hex) -> int:
+        return int(hex, 16)
+
+    def get_map_id(self) -> int:
         """
-        Checks for if a trainers was just recently fought and won against, and what trainer it was
+        Reads the bytes of the current map address in memory then returns what map we are on as an int.
+        This is also what is mapped to the location data's map_id
+
+        Return values
+        -------------
+        -1 - Not important to us
+
+        0 - Outskirt Stand
+
+        1 - Phenac City
+
+        2 - Mayor's House
+
+        3 - Pregym
         """
-        # IN_BATTLE will only result in 0 (false) or 1 (true)
-        if read_byte(IN_BATTLE) and read_byte(BATTLE_WIN_CHECK) == 0x02:
-            pass
-        logger.error("check_trainer_fought has not been implemented yet")
-        return False
+        # Read all four bytes individually 
+        byte1 = read_byte(MAP_ID_ADDR)
+        byte2 = read_byte(MAP_ID_ADDR + 1)
+        byte3 = read_byte(MAP_ID_ADDR + 2)
+        byte4 = read_byte(MAP_ID_ADDR + 3)
+        
+        map: int = -1
+        if byte1 == self.hex_to_dec("0x80") and byte2 == self.hex_to_dec("0x7E") and byte3 == self.hex_to_dec("0xFD") and byte4 == self.hex_to_dec("0xE0"):
+            map = OUTSKIRT_STAND_ID
+        elif byte1 == self.hex_to_dec("0x80") and byte2 == self.hex_to_dec("0x7E") and byte3 == self.hex_to_dec("0xFE") and byte4 == self.hex_to_dec("0x78"):
+            map = PHENAC_CITY_ID
+        elif byte1 == self.hex_to_dec("0x80") and byte2 == self.hex_to_dec("0x7E") and byte3 == self.hex_to_dec("0x10") and byte4 == self.hex_to_dec("0x94"):
+            map = MAYOR_HOUSE_ID
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x12 and byte4 == 0x5C:
+            map = PREGYM_ID
+        return map
 
     async def pc_check_locations(self):
-        pass
+        current_map: int = self.get_map_id()
+        local_missing = copy.deepcopy(self.missing_locations)
+        for loc in local_missing:
+            local_loc = self.location_names.lookup_in_game(loc)
+            pc_loc_data: PCLocData = all_locations[local_loc]
+            if pc_loc_data is None:
+                if loc not in warned_locs:
+                    logger.warning(f"WARNING: Location {loc} does not have any location data to it! Please inform the Pokemon Colosseum AP devs.")
+                    warned_locs.append(loc)
+                continue
+            # If the location's map is not the current map or location's type has not been set yet, do not check
+            try:
+                if pc_loc_data.type is PCLocType.NONE:
+                    if loc not in warned_locs:
+                        logger.warning(f"WARNING: The type of the location is set to NONE for location {loc}. Please inform the Pokemon Colosseum AP devs.")
+                        warned_locs.append(loc)
+                    continue
+                if current_map != pc_loc_data.map_id:
+                    continue
+            except:
+                # Should never happen, but just in case
+                raise Exception(f"ERROR: {loc} passed previous check but is not able to provice type or map_id. Please inform the Pokemon Colosseum AP devs.")
+
+
+            if self.check_ram(pc_loc_data, pc_loc_data.ram_info.ram_addr, current_map):
+                self.locations_checked.add(loc)
+
+        await self.check_locations(self.locations_checked)
+        # Special stuff to check if game has been cleared
+
+    def check_ram(self, loc_data: PCLocData, addr: int, cur_map) -> bool:
+        # Get intitial RAM data from address
+        ram_data = 0x0
+        if loc_data.ram_info.ptr:
+            ram_data = read_byte(ptr_addr(addr, loc_data.ram_info.ptr_offset))
+        else:
+            ram_data = read_byte(addr)
+
+        match loc_data.type:
+            case PCLocType.START:
+                if cur_map == OUTSKIRT_STAND_ID:
+                    return True
+            case PCLocType.TRAINER:
+                if self.trainer_win:
+                    bit = bits(ram_data)
+                    if (bit[loc_data.ram_info.bit_pos]):
+                        if NO_DISABLE not in loc_data.code:
+                            self.trainer_win = False
+                        return True
+                if not self.trainer_win and read_byte(IN_BATTLE) and read_byte(BATTLE_WIN_CHECK) == 0x02:
+                        self.trainer_win = True # Enable a flag to keep checking after the fight is over to get the trainer check
+            case PCLocType.SHADOW:
+                if read_byte(IN_BATTLE):
+                    bit = bits(ram_data)
+                    if (bit[loc_data.ram_info.bit_pos]):
+                        return True
+            case PCLocType.CHEST | PCLocType.EVENT:
+                bit = bits(ram_data)
+                if (bit[loc_data.ram_info.bit_pos]):
+                    return True
+        return False
 
     async def give_pc_items(self):
         pass
@@ -212,8 +309,8 @@ class PCContext(BaseContext):
                             await self.wait_for_next_loop(WAIT_TIMER_LONG)
                             continue
 
-                        arg_seed = read_string(0x80000001, len(str(self.arg_seed)))
-                        if arg_seed != self.arg_seed:
+                        arg_seed = read_string(0x80000008, len(str(self.arg_seed))-7)
+                        if not self.arg_seed.endswith(arg_seed):
                             raise Exception(
                                 "Incorrected Randomized Pokemon Colosseum ISO file selected. The seed does not match." +
                                 "Please verify that you are using the right ISO/seed/APPC file.")

@@ -1,3 +1,35 @@
+from typing import NamedTuple, Optional
+from enum import Enum
+
+class PCLocType(Enum):
+    NONE = -1
+    START = 0
+    TRAINER = 1
+    SHADOW = 2
+    CHEST = 3
+    ITEM = 4
+    EVENT = 5
+
+class PCRamData(NamedTuple):
+    """
+    Pokemon Colosseum Location RAM Representation. Any parameters can be left empty.
+
+    Parameters
+    --------
+    ram_addr: The address of what needs to be checked or of the pointer
+
+    ptr: If the ram_addr is a pointer or not
+
+    ptr_offset: The offset of the ram_addr if it is a pointer
+
+    bit_pos: The bit position if it is a bitflag address in the range of 0-7
+
+    """
+    ram_addr: Optional[int] = None
+    ptr: bool = False
+    ptr_offset: Optional[int] = None
+    bit_pos: Optional[int] = None
+
 class StringByteFunction:
     @staticmethod
     def string_to_bytes(user_string: str, encoded_length: int) -> bytes:
