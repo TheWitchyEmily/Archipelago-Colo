@@ -13,7 +13,6 @@ from .Locations import *
 from .client.constants import *
 from .Helpers import StringByteFunction as sbf, PCLocType
 from .iso_helper.colo_rom import PCUSAPPatch
-from .client.game_address import *
 
 warned_locs = []
 
@@ -181,7 +180,7 @@ class PCContext(BaseContext):
             map = OUTSKIRT_STAND_ID
         elif byte1 == self.hex_to_dec("0x80") and byte2 == self.hex_to_dec("0x7E") and byte3 == self.hex_to_dec("0xFE") and byte4 == self.hex_to_dec("0x78"):
             map = PHENAC_CITY_ID
-        elif byte1 == self.hex_to_dec("0x80") and byte2 == self.hex_to_dec("0x7E") and byte3 == self.hex_to_dec("0x10") and byte4 == self.hex_to_dec("0x94"):
+        elif byte1 == self.hex_to_dec("0x80") and byte2 == self.hex_to_dec("0x7F") and byte3 == self.hex_to_dec("0x10") and byte4 == self.hex_to_dec("0x94"):
             map = MAYOR_HOUSE_ID
         elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x12 and byte4 == 0x5C:
             map = PREGYM_ID
@@ -205,7 +204,7 @@ class PCContext(BaseContext):
                         logger.warning(f"WARNING: The type of the location is set to NONE for location {loc}. Please inform the Pokemon Colosseum AP devs.")
                         warned_locs.append(loc)
                     continue
-                if current_map != pc_loc_data.map_id:
+                if current_map not in pc_loc_data.map_id:
                     continue
             except:
                 # Should never happen, but just in case
@@ -226,6 +225,9 @@ class PCContext(BaseContext):
         else:
             ram_data = read_byte(addr)
 
+        if loc_data.debug is not None:
+            logger.info(f"{loc_data.debug.loc_name}|{hex(loc_data.debug.ptr_offset)}|{bits(ram_data)[loc_data.debug.bit]}")
+
         match loc_data.type:
             case PCLocType.START:
                 if cur_map == OUTSKIRT_STAND_ID:
@@ -234,8 +236,7 @@ class PCContext(BaseContext):
                 if self.trainer_win:
                     bit = bits(ram_data)
                     if (bit[loc_data.ram_info.bit_pos]):
-                        if NO_DISABLE not in loc_data.code:
-                            self.trainer_win = False
+                        self.trainer_win = False
                         return True
                 if not self.trainer_win and read_byte(IN_BATTLE) and read_byte(BATTLE_WIN_CHECK) == 0x02:
                         self.trainer_win = True # Enable a flag to keep checking after the fight is over to get the trainer check

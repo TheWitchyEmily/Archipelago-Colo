@@ -4,51 +4,54 @@ from .Strings import Locations, Regions
 from typing import Dict, List, TYPE_CHECKING
 from .Options import ColosseumOptions, ColosseumSanity
 from .Helpers import PCRamData, PCLocType
-from .client.game_address import *
 from .client.constants import *
 
 if TYPE_CHECKING:
     from . import ColosseumWorld
 
+class DebugInfo(NamedTuple):
+    ptr_offset: int = -1
+    bit: int = -1
+    loc_name: str = ""
+
 class PCLocData(NamedTuple):
     ram_info: PCRamData = None
-    map_id: int = -2 # To ensure that if a map ID is not important it is not unnecessarily checked in the client
+    map_id: List[int] = [-2] # To ensure that if a map ID is not important it is not unnecessarily checked in the client
     code: List[int] = [-1]
     type: PCLocType = PCLocType.NONE
+    debug: DebugInfo = None
 
 class ColosseumLocation(Location):
     game: str = "Pokemon Colosseum"
 
 start_locations: Dict[str, PCLocData] = {
-    Locations.Misc.espeon_umbreon: PCLocData(ram_info=PCRamData(MAP_ID_ADDR), type=PCLocType.START, map_id=OUTSKIRT_STAND_ID)
+    Locations.Misc.espeon_umbreon: PCLocData(ram_info=PCRamData(MAP_ID_ADDR), type=PCLocType.START, map_id=[OUTSKIRT_STAND_ID])
 }
 
 outside_city_locations: Dict[str, PCLocData] = {
-    Locations.Trainers.willie: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_1_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=OUTSKIRT_STAND_ID)
+    Locations.Trainers.willie: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BEC5, bit_pos=7), type=PCLocType.TRAINER, map_id=[OUTSKIRT_STAND_ID])
 }
 
 phenac_locations: Dict[str, PCLocData] = {
-    # Not sending: Rui, Folly_1, Makuhita, Trudly, chest_1, Kaid
-    Locations.Misc.rui: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_4_OFFSET, bit_pos=5), type=PCLocType.EVENT, map_id=PHENAC_CITY_ID),
-    Locations.Misc.tm41: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=0), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID, code=[NO_DISABLE]),
-    Locations.Trainers.folly: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_4_OFFSET, bit_pos=4), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID),
-    Locations.Trainers.wakin: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_2_OFFSET, bit_pos=6), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID),
-    Locations.Trainers.folly_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_3_OFFSET, bit_pos=6), type=PCLocType.TRAINER, map_id=MAYOR_HOUSE_ID),
-    Locations.Trainers.trudly: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_3_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=MAYOR_HOUSE_ID),
-    Locations.Trainers.kaid: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=0), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID),
-    Locations.Trainers.drig: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=TRAINER_GROUP_5_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=PHENAC_CITY_ID),
-    Locations.ShadowPokemon.makuhita_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=SHADOW_1_CATCH_OFFSET, bit_pos=4), type=PCLocType.SHADOW, map_id=MAYOR_HOUSE_ID),
-    Locations.Chests.phenac_chest_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=ITEM_COLLECTION_1, bit_pos=4), type=PCLocType.CHEST, map_id=PHENAC_CITY_ID)
+    Locations.Misc.rui: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BEC4, bit_pos=5), type=PCLocType.EVENT, map_id=[PHENAC_CITY_ID]),
+    Locations.Misc.tm41: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=0), type=PCLocType.EVENT, map_id=[PHENAC_CITY_ID]),
+    Locations.Trainers.folly: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BEC4, bit_pos=4), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
+    Locations.Trainers.wakin: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C11E, bit_pos=6), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
+    Locations.Trainers.folly_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EA, bit_pos=6), type=PCLocType.TRAINER, map_id=[MAYOR_HOUSE_ID]),
+    Locations.Trainers.trudly: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EA, bit_pos=7), type=PCLocType.TRAINER, map_id=[MAYOR_HOUSE_ID]),
+    Locations.Trainers.kaid: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=0), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
+    Locations.Trainers.drig: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECB, bit_pos=7), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
+    Locations.ShadowPokemon.makuhita_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C075, bit_pos=4), type=PCLocType.SHADOW, map_id=[MAYOR_HOUSE_ID]),
+    Locations.Chests.phenac_chest_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5F, bit_pos=4), type=PCLocType.CHEST, map_id=[PHENAC_CITY_ID])
 }
 
 pregym_locations: Dict[str, PCLocData] = {
-    # Not sending: Gwin
-    Locations.Misc.complete_pre_gym: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=PREGYM_ID, code=[NO_DISABLE]),
-    Locations.Trainers.botan: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=4), type=PCLocType.TRAINER, map_id=PREGYM_ID),
-    Locations.Trainers.liqui: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=5), type=PCLocType.TRAINER, map_id=PREGYM_ID),
-    Locations.Trainers.dugo: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=6), type=PCLocType.TRAINER, map_id=PREGYM_ID),
-    Locations.Trainers.gwin: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET, bit_pos=7), type=PCLocType.TRAINER, map_id=PREGYM_ID),
-    Locations.Trainers.justy: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=PREGYM_OFFSET_2, bit_pos=6), type=PCLocType.TRAINER, map_id=PREGYM_ID)
+    Locations.Misc.complete_pre_gym: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=7), type=PCLocType.EVENT, map_id=[PREGYM_ID]),
+    Locations.Trainers.botan: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=4), type=PCLocType.TRAINER, map_id=[PREGYM_ID]),
+    Locations.Trainers.liqui: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=5), type=PCLocType.TRAINER, map_id=[PREGYM_ID]),
+    Locations.Trainers.dugo: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=6), type=PCLocType.TRAINER, map_id=[PREGYM_ID]),
+    Locations.Trainers.gwin: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=7), type=PCLocType.TRAINER, map_id=[PREGYM_ID]),
+    Locations.Trainers.justy: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECD, bit_pos=6), type=PCLocType.TRAINER, map_id=[PREGYM_ID])
 }
 
 phenac_colosseum_r1_locations: Dict[str, PCLocData] = {

@@ -25,5 +25,16 @@ PHENAC_CITY_ID = 1
 MAYOR_HOUSE_ID = 2
 PREGYM_ID = 3
 
+# Primary pointer addresses
+PRIMARY_POINTER = 0x8047ADB8
+PARTY_1_ID_OFFSET = 0xA0
+ITEM_START_OFFSET = 0x7976
+
+#General addresses
+MAP_ID_ADDR = 0x80538DE0
+IN_BATTLE = 0x8040836F
+BATTLE_WIN_CHECK = 0x8046D767
+OPPONENT_ID = 0x80473CA1
+
 # Special location codes
 NO_DISABLE = 0x5 # For trainer location type, do not disable the scanning loop as another check relies on the same information
