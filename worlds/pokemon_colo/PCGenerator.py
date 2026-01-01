@@ -39,15 +39,15 @@ class ColosseumRandomizer:
 
         # Game ID change for save files to be different
         logger.info("Update ISO game ID locations with AP generated seed")
+        three_char_seed = local_seed[:3]
         bin_data = self.gcm.read_file_data("sys/boot.bin")
         bin_data.seek(0x01)
-        bin_data.write(sbf.string_to_bytes(local_seed, len(local_seed)))
-        four_char_local_seed = local_seed[:4]
+        bin_data.write(sbf.string_to_bytes(three_char_seed, len(three_char_seed)))
         dol_data = self.gcm.read_file_data("sys/main.dol")
         dol_data.seek(0x399B75)
-        dol_data.write(sbf.string_to_bytes(four_char_local_seed, len(four_char_local_seed)))
+        dol_data.write(sbf.string_to_bytes(three_char_seed, len(three_char_seed)))
         dol_data.seek(0x39A755)
-        dol_data.write(sbf.string_to_bytes(four_char_local_seed, len(four_char_local_seed)))
+        dol_data.write(sbf.string_to_bytes(three_char_seed, len(three_char_seed)))
         self.gcm.changed_files["sys/boot.bin"] = bin_data
         self.gcm.changed_files["sys/main.dol"] = dol_data
 

@@ -272,9 +272,9 @@ class PCContext(BaseContext):
                             continue
 
                     if not self.dolphin_status == CONNECTION_CONNECTED:
-                        # If address 800000009 is not set, random ISO not loaded
-                        game_id = read_string(0x80000009, 1)
-                        if not game_id:
+                        # If game ID is the same as standard, it is not randomized
+                        game_id = read_string(0x80000000, 6)
+                        if game_id == "GC6E01":
                             self.dolphin_status = CONNECTION_REFUSED
                             logger.info(self.dolphin_status)
                             dme.un_hook()
@@ -310,8 +310,8 @@ class PCContext(BaseContext):
                             await self.wait_for_next_loop(WAIT_TIMER_LONG)
                             continue
 
-                        arg_seed = read_string(0x80000008, len(str(self.arg_seed))-7)
-                        if not self.arg_seed.endswith(arg_seed):
+                        arg_seed = read_string(0x80000001, 3)
+                        if not self.arg_seed.startswith(arg_seed):
                             raise Exception(
                                 "Incorrected Randomized Pokemon Colosseum ISO file selected. The seed does not match." +
                                 "Please verify that you are using the right ISO/seed/APPC file.")
