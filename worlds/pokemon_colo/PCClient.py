@@ -15,12 +15,16 @@ from .Helpers import StringByteFunction as sbf, PCLocType
 from .iso_helper.colo_rom import PCUSAPPatch
 
 warned_locs = []
+warned_items = []
 
 def read_byte(console_addr: int):
     return int.from_bytes(dme.read_bytes(console_addr, 1))
 
 def read_short(console_addr: int):
     return int.from_bytes(dme.read_bytes(console_addr, 2))
+
+def read_word(console_addr: int) -> int:
+    return int.from_bytes(dme.read_bytes(console_addr, 4))
 
 def ptr_addr(console_addr: int, ptr_offset: int) -> int:
     return dme.follow_pointers(console_addr, [ptr_offset])
@@ -31,11 +35,8 @@ def write_short(console_addr: int, value: int):
 def read_string(console_addr: int, strlen: int):
     return sbf.byte_string_strip_null_terminator(dme.read_bytes(console_addr, strlen))
 
-async def write_bytes_and_validate(addr: int, ram_offset: list[str] | None, curr_value: bytes) -> None:
-    if not ram_offset:
-        dme.write_bytes(addr, curr_value)
-    else:
-        dme.write_bytes(dme.follow_pointers(addr, ram_offset), curr_value)
+async def write_bytes_and_validate(addr: int, value: bytes) -> None:
+    dme.write_bytes(addr, value)
 
 def bits(byte: int):
     return [byte >> i & 1 for i in range(8)]
@@ -76,6 +77,7 @@ class PCContext(BaseContext):
         self.game_clear = False
         self.last_not_ingame = time.time()
         self.arg_seed = ""
+        self.idx_check = 0
 
         # Slot options for unlocks
         self.goal = None
@@ -152,6 +154,16 @@ class PCContext(BaseContext):
     def hex_to_dec(self, hex) -> int:
         return int(hex, 16)
 
+    def in_playable_state(self, byte1: int = 0x0, byte2: int = 0x0, byte3: int = 0x0, byte4: int = 0x0) -> bool:
+        # Read all four bytes individuallym if not swt from the function call
+        if byte1 == 0x0:
+            byte1 = read_byte(MAP_ID_ADDR)
+            byte2 = read_byte(MAP_ID_ADDR + 1)
+            byte3 = read_byte(MAP_ID_ADDR + 2)
+            byte4 = read_byte(MAP_ID_ADDR + 3)
+        # Check if we are in either splash screen, title screen or main menu, and return the opposite of the result (True if we are not, False if we are)
+        return not (byte1 == 0x80 and byte2 == 0x7F and ((byte3 == 0x25 and (byte4 == 0x5c or byte4 == 0xA8)) or (byte3 == 0x1F and byte4 == 0xB8) or (byte3 == 0x36 and byte4 == 0xE0)))
+
     def get_map_id(self) -> int:
         """
         Reads the bytes of the current map address in memory then returns what map we are on as an int.
@@ -161,13 +173,15 @@ class PCContext(BaseContext):
         -------------
         -1 - Not important to us
 
-        0 - Outskirt Stand
+        0 - Title Screen
 
-        1 - Phenac City
+        1 - Outskirt Stand
 
-        2 - Mayor's House
+        2 - Phenac City
 
-        3 - Pregym
+        3 - Mayor's House
+
+        4 - Pregym
         """
         # Read all four bytes individually 
         byte1 = read_byte(MAP_ID_ADDR)
@@ -176,11 +190,13 @@ class PCContext(BaseContext):
         byte4 = read_byte(MAP_ID_ADDR + 3)
         
         map: int = -1
-        if byte1 == self.hex_to_dec("0x80") and byte2 == self.hex_to_dec("0x7E") and byte3 == self.hex_to_dec("0xFD") and byte4 == self.hex_to_dec("0xE0"):
+        if not self.in_playable_state(byte1, byte2, byte3, byte4):
+            map = MENU_ID
+        elif byte1 == 0x80 and byte2 == 0x7E and byte3 == 0xFD and byte4 == 0xE0:
             map = OUTSKIRT_STAND_ID
-        elif byte1 == self.hex_to_dec("0x80") and byte2 == self.hex_to_dec("0x7E") and byte3 == self.hex_to_dec("0xFE") and byte4 == self.hex_to_dec("0x78"):
+        elif byte1 == 0x80 and byte2 == 0x7E and byte3 == 0xFE and byte4 == 0x78:
             map = PHENAC_CITY_ID
-        elif byte1 == self.hex_to_dec("0x80") and byte2 == self.hex_to_dec("0x7F") and byte3 == self.hex_to_dec("0x10") and byte4 == self.hex_to_dec("0x94"):
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x10 and byte4 == 0x94:
             map = MAYOR_HOUSE_ID
         elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x12 and byte4 == 0x5C:
             map = PREGYM_ID
@@ -231,6 +247,8 @@ class PCContext(BaseContext):
         match loc_data.type:
             case PCLocType.START:
                 if cur_map == OUTSKIRT_STAND_ID:
+                    logger.info("Until either it is patched out or a new area in memory is found, item checks will only be given after the first save of the game.")
+                    logger.info("The quickest save point is the Pokemon Center right after Shady Guy Folly.")
                     return True
             case PCLocType.TRAINER:
                 if self.trainer_win:
@@ -252,7 +270,52 @@ class PCContext(BaseContext):
         return False
 
     async def give_pc_items(self):
-        pass
+        last_recv_idx = read_short(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET))
+        save_count = read_short(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET))
+        if len(self.items_received) == last_recv_idx or save_count == 0:
+            return
+
+        recv_items = self.items_received[last_recv_idx:]
+        for item in recv_items:
+            last_recv_idx += 1
+            self.idx_check = last_recv_idx
+            pc_item_name = self.item_names.lookup_in_game(item.item)
+            pc_item: ItemDesc = None
+            for tmp_item in all_items:
+                if pc_item_name == tmp_item["name"]:
+                    pc_item = tmp_item
+                    break
+            if pc_item["data"] is None:
+                if pc_item not in warned_items:
+                    logger.error(f"Item {pc_item["name"]} does not have any data associated with it! Please inform the Pokemon Colosseum AP devs.")
+                    warned_items.append(pc_item)
+                continue
+            if pc_item["data"].item_type == PCItemType.ITEM:
+                use_addr = 0x0
+                use_addr_amount = 0x0
+                amount_to_increase = 0x0
+                while use_addr == 0x0:
+                    # Input fail condition (PC item storage is not infinite)
+                    ptr_offset = 0x7974 + amount_to_increase
+                    pc_item_id = read_short(ptr_addr(PRIMARY_POINTER, ptr_offset))
+                    if pc_item_id == pc_item["data"].item_id or pc_item_id == 0:
+                        use_addr = ptr_addr(PRIMARY_POINTER, ptr_offset)
+                        use_addr_amount = ptr_addr(PRIMARY_POINTER, ptr_offset + 0x2)
+                        break
+                    amount_to_increase += 0x4
+                cur_item_amount = read_short(use_addr_amount) + pc_item["data"].amount
+                await write_bytes_and_validate(use_addr, int.to_bytes(pc_item["data"].item_id, 2))
+                await write_bytes_and_validate(use_addr_amount, int.to_bytes(cur_item_amount, 2))
+                # Handle adding an item to the PC storage
+                pass
+            elif pc_item.data.item_type == PCItemType.KEYITEM:
+                # Handle adding an item to the keyitem pocket
+                pass
+            elif pc_item.data.item_type == PCItemType.POKEMON:
+                # Handle adding a pokemon to the PC
+                pass
+        await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET), int.to_bytes(last_recv_idx, 2))
+        await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET), int.to_bytes(1, 1))
 
     async def dolphin_sync_main_task(self):
         logger.info(f"Using Pokemon Colosseum client {CLIENT_VERSION}")
@@ -322,8 +385,9 @@ class PCContext(BaseContext):
                     # At this point, we are connected. Update UI elements in the PCClient tab (when one is made)
 
                     # Lastly check any locations
-                    await self.pc_check_locations()
-                    await self.give_pc_items()
+                    if self.get_map_id() != MENU_ID:
+                        await self.pc_check_locations()
+                        await self.give_pc_items()
                     await self.wait_for_next_loop(WAIT_TIMER_SHORT)
                 except Exception as ex:
                     dme.un_hook()

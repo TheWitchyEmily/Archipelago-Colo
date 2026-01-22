@@ -10,6 +10,12 @@ class PCLocType(Enum):
     ITEM = 4
     EVENT = 5
 
+class PCItemType(Enum):
+    NONE = -1
+    POKEMON = 0
+    KEYITEM = 1
+    ITEM = 2
+
 class PCRamData(NamedTuple):
     """
     Pokemon Colosseum Location RAM Representation. Any parameters can be left empty.
