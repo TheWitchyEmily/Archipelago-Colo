@@ -41,7 +41,7 @@ class ColosseumWeb(WebWorld):
             "A guide to connect Pokemon Colosseum randomizer to an Archipelago Multiworld",
             "English",
             "setup_en.md",
-            "docs",
+            "setup/en",
             ["zellman01"],
         )
     ]
