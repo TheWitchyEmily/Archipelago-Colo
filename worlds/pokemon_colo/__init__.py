@@ -3,7 +3,7 @@ import os
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess
 from typing import Dict, ClassVar, List, Any
-from .Options import ColosseumOptions, RuiUnlock, Goal, RealgamTowerUnlock, PurifyUnlockAmount
+from .Options import *
 from .Locations import ColosseumLocation, all_locations, set_location_options
 from .Items import ColosseumItem, all_items, base_id, filler, set_items_used
 from .Regions import colo_regions_all
@@ -31,6 +31,17 @@ class ColosseumWeb(WebWorld):
             RealgamTowerUnlock,
             PurifyUnlockAmount
         ]),
+        OptionGroup("Location Settings", [
+            AddMtBattle,
+            MirakleB,
+            ColosseumSanity
+        ]),
+        OptionGroup("Shadow Pokemon Settings", [
+            RuiUnlock,
+            ShadowPokemonAsItems,
+            PhenacStarterChoice,
+            PostgameShadowPokemon
+        ])
     ]
     options_presets = option_presets
     theme = "stone"
