@@ -14,7 +14,7 @@ class PCItemData(NamedTuple):
     """
     item_type: PCItemType = PCItemType.NONE
     amount: int = -1
-    shadow_id = -1
+    shadow_id: int = -1
     """
     Used only for the Pokemon PCItemType. Denotes what the shadow ID should be.
     """
