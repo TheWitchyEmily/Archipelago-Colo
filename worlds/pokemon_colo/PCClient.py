@@ -311,9 +311,19 @@ class PCContext(BaseContext):
             elif pc_item.data.item_type == PCItemType.KEYITEM:
                 # Handle adding an item to the keyitem pocket
                 pass
-            elif pc_item.data.item_type == PCItemType.POKEMON:
+            elif pc_item["data"].item_type == PCItemType.POKEMON:
                 # Handle adding a pokemon to the PC
-                pass
+                use_addr = 0x0
+                amount_to_increase = 0x0
+                while use_addr == 0x0:
+                    offset = B1_S1_OFFSET + amount_to_increase
+                    pc_poke_id = read_short(ptr_addr(PRIMARY_POINTER, offset))
+                    if pc_poke_id == 0:
+                        use_addr = ptr_addr(PRIMARY_POINTER, offset)
+                        break
+                    amount_to_increase += SLOT_OFFSET
+                await write_bytes_and_validate(use_addr, int.to_bytes(pc_item["data"].item_id, 2))
+                await write_bytes_and_validate(use_addr + UNKNOWN_REQUIRED, int.to_bytes(0x0B030202, 4))
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET), int.to_bytes(last_recv_idx, 2))
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET), int.to_bytes(1, 1))
 
