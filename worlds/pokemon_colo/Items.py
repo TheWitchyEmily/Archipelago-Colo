@@ -18,6 +18,18 @@ class PCItemData(NamedTuple):
     """
     Used only for the Pokemon PCItemType. Denotes what the shadow ID should be.
     """
+    level: int = -1
+    """
+    Used only for the Pokemon PCItemType. Sets what the default level should be of the shadow Pokemon
+    """
+    move_id: List[int] = [None, None, None, None]
+    """
+    Used only for the Pokemon PCItemType. The Move IDs of the default moves of the specified Pokemon
+    """
+    move_pp: List[int] = [None, None, None, None]
+    """
+    Used only for the Pokemon PCItemType. The PP of the given moves above.
+    """
 
 class ColosseumItem(Item):
     game: str = "Pokemon Colosseum"
