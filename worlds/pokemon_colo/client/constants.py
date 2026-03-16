@@ -30,10 +30,17 @@ PREGYM_ID = 4
 PRIMARY_POINTER = 0x8047ADB8
 AP_ITEM_INDEX_OFFSET = 0x11
 SAVE_COUNT_OFFSET = 0x13
-PARTY_1_ID_OFFSET = 0xA1
 ITEM_START_OFFSET = 0x7976
 B1_S1_OFFSET = 0xB9C
 SLOT_OFFSET = 0x138 # Only used to add to B1_S1 to check where the next empty slot is for a new shadow pokemon
+
+#Party Offsets
+PARTY_1_ID_OFFSET = 0xA1
+PARTY_2_ID_OFFSET = 0x1D9
+PARTY_3_ID_OFFSET = 0x311
+PARTY_4_ID_OFFSET = 0x449
+PARTY_5_ID_OFFSET = 0x581
+PARTY_6_ID_OFFSET = 0x6B9
 
 # Pokemon stat offset (starting from the first byte of the Pokemon's data)
 NATURE_OFFSET = 0x4
