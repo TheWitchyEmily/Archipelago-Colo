@@ -70,11 +70,21 @@ UNKNOWN_REQUIRED = 0x8 # (required to be 0B 03 02 02?)
 CURRENT_EXP = 0x5C
 MOVE_1_OFFSET = 0x78
 
+# Bag Offsets to add, remove, or manipulate items in the inventory. Items are 4 Bytes, 2 for Id and 2 for quantity
+ITEMS_BAG_START_OFFSET = 0x7F0 #Max 20 Item Limit
+KEY_ITEMS_BAG_START_OFFSET = 0x840 #Max 43 Items
+BALLS_BAG_START_OFFSET = 0x8EC # Max 16 Items
+TMS_BAG_START_OFFSET = 0x92C # Max 64 Items
+BERRIES_BAG_START_OFFSET = 0xA2C # Max 40 Items
+
 #General addresses
 MAP_ID_ADDR = 0x80538DE0
 IN_BATTLE = 0x8040836F
 BATTLE_WIN_CHECK = 0x8046D767
 OPPONENT_ID = 0x80473CA1
+
+#Misc
+RUI_NAME = 0x80409632 # Max 7 characters, 2 Byte per character. https://bulbapedia.bulbagarden.net/wiki/GameCube_character_encoding_(Generation_III)#Pok%C3%A9mon_Colosseum_and_XD
 
 # Special location codes
 NO_DISABLE = 0x5 # For trainer location type, do not disable the scanning loop as another check relies on the same information
