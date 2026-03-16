@@ -312,9 +312,23 @@ class PCContext(BaseContext):
                 await write_bytes_and_validate(use_addr_amount, int.to_bytes(cur_item_amount, 2))
                 # Handle adding an item to the PC storage
                 pass
-            elif pc_item.data.item_type == PCItemType.KEYITEM:
+            elif pc_item["data"].item_type == PCItemType.KEYITEM:
                 # Handle adding an item to the keyitem pocket
-                pass
+                use_addr = 0x0
+                amount_to_increase = 0x0
+                while use_addr == 0x0:
+                    # Input fail condition (Key Items bag is not infinite)
+                    ptr_offset = KEY_ITEMS_BAG_START_OFFSET + amount_to_increase
+                    key_item_id = read_short(ptr_addr(PRIMARY_POINTER, ptr_offset))
+                    if key_item_id == pc_item["data"].item_id:
+                        logger.error(f"Item {pc_item["name"]} is a Key Item and should only exist once! Please inform the Pokemon Colosseum AP devs.")
+                        break
+                    if key_item_id == 0:
+                        use_addr = ptr_addr(PRIMARY_POINTER, ptr_offset)
+                        break
+                    amount_to_increase += 0x4
+                if (use_addr != 0x0):
+                    await write_bytes_and_validate(use_addr, int.to_bytes(pc_item["data"].item_id, 2))
             elif pc_item["data"].item_type == PCItemType.POKEMON:
                 # Handle adding a pokemon to the PC
                 use_addr = 0x0
