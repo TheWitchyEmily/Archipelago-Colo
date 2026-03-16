@@ -39,7 +39,7 @@ phenac_locations: Dict[str, PCLocData] = {
     Locations.Trainers.wakin: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C11E, bit_pos=6), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
     Locations.Trainers.folly_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EA, bit_pos=6), type=PCLocType.TRAINER, map_id=[MAYOR_HOUSE_ID]),
     Locations.Trainers.trudly: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EA, bit_pos=7), type=PCLocType.TRAINER, map_id=[MAYOR_HOUSE_ID]),
-    Locations.Trainers.kaid: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=0), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
+    Locations.Trainers.kaib: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=0), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
     Locations.Trainers.drig: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECB, bit_pos=7), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
     Locations.ShadowPokemon.makuhita_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C075, bit_pos=4), type=PCLocType.SHADOW, map_id=[MAYOR_HOUSE_ID]),
     Locations.Chests.phenac_chest_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5F, bit_pos=4), type=PCLocType.CHEST, map_id=[PHENAC_CITY_ID])
