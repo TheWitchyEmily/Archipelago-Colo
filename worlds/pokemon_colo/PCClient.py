@@ -200,6 +200,10 @@ class PCContext(BaseContext):
             map = MAYOR_HOUSE_ID
         elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x12 and byte4 == 0x5C:
             map = PREGYM_ID
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x13 and byte4 == 0xD8:
+            map = CONSTRUCTION_LOT_ID
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0xFE and byte4 == 0xC4:
+            map = PYRITE_ID
         return map
 
     async def pc_check_locations(self):

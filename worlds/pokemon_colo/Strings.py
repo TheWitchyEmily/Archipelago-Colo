@@ -220,6 +220,7 @@ class Locations:
         blu_badge = "Realgam Tower Pregate - Blue ID Badge Get"
         ylw_badge = "Realgam Tower Pregate - Yellow ID Badge Get"
         master_ball = "Agate Village - Master Ball Get"
+        bartender_gives_5_pokeballs = "Outskrits - Bartender gives 5 Pokeball before restocking inventory"
 
     class ShadowPokemon:
         makuhita_capture = "Phenac City - Makuhita Captured"

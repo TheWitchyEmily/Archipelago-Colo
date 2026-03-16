@@ -29,7 +29,8 @@ start_locations: Dict[str, PCLocData] = {
 }
 
 outside_city_locations: Dict[str, PCLocData] = {
-    Locations.Trainers.willie: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BEC5, bit_pos=7), type=PCLocType.TRAINER, map_id=[OUTSKIRT_STAND_ID])
+    Locations.Trainers.willie: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BEC5, bit_pos=7), type=PCLocType.TRAINER, map_id=[OUTSKIRT_STAND_ID]),
+    Locations.Misc.bartender_gives_5_pokeballs: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECB, bit_pos=1), type=PCLocType.EVENT, map_id=[OUTSKIRT_STAND_ID])
 }
 
 phenac_locations: Dict[str, PCLocData] = {
@@ -41,8 +42,14 @@ phenac_locations: Dict[str, PCLocData] = {
     Locations.Trainers.trudly: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EA, bit_pos=7), type=PCLocType.TRAINER, map_id=[MAYOR_HOUSE_ID]),
     Locations.Trainers.kaib: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=0), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
     Locations.Trainers.drig: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECB, bit_pos=7), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
-    Locations.ShadowPokemon.makuhita_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C075, bit_pos=4), type=PCLocType.SHADOW, map_id=[MAYOR_HOUSE_ID]),
-    Locations.Chests.phenac_chest_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5F, bit_pos=4), type=PCLocType.CHEST, map_id=[PHENAC_CITY_ID])
+    Locations.ShadowPokemon.croconaw_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C075, bit_pos=7), type=PCLocType.SHADOW, map_id=[MAYOR_HOUSE_ID]),
+    Locations.ShadowPokemon.quilava_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C075, bit_pos=6), type=PCLocType.SHADOW, map_id=[MAYOR_HOUSE_ID]),
+    Locations.ShadowPokemon.quilava_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C075, bit_pos=5), type=PCLocType.SHADOW, map_id=[MAYOR_HOUSE_ID]),
+    Locations.ShadowPokemon.bayleaf_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C075, bit_pos=4), type=PCLocType.SHADOW, map_id=[MAYOR_HOUSE_ID]),
+    Locations.Chests.phenac_chest_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5F, bit_pos=4), type=PCLocType.CHEST, map_id=[PHENAC_CITY_ID]),
+    Locations.Trainers.bluno: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EE, bit_pos=1), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
+    Locations.Trainers.rosso: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EE, bit_pos=0), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
+    Locations.Trainers.verde: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EF, bit_pos=7), type=PCLocType.TRAINER, map_id=[PHENAC_CITY_ID]),
 }
 
 pregym_locations: Dict[str, PCLocData] = {
@@ -101,14 +108,14 @@ pyrite_locations: Dict[str, PCLocData] = {
     Locations.Trainers.diogo: None,
     Locations.Trainers.leba: None,
     Locations.Trainers.divel: None,
-    Locations.Trainers.cail: None,
+    Locations.Trainers.cail: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EB, bit_pos=4), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
     Locations.ShadowPokemon.slugma_capture: None,
     Locations.ShadowPokemon.misdreavus_capture: None,
     Locations.ShadowPokemon.noctowl_capture: None,
     Locations.ShadowPokemon.flaffy_capture: None,
     Locations.ShadowPokemon.skiploom_capture: None,
     Locations.ShadowPokemon.quagsire_capture: None,
-    Locations.ShadowPokemon.furret_capture: None
+    Locations.ShadowPokemon.furret_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=6), type=PCLocType.SHADOW, map_id=[PYRITE_ID])
 }
 
 pyrite_2_locations: Dict[str, PCLocData] = {
