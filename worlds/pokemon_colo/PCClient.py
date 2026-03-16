@@ -2,7 +2,7 @@ import asyncio, time, copy, sys
 from typing import Optional
 
 # AP imports
-import NetUtils, Utils
+import Utils
 from CommonClient import get_base_parser, gui_enabled, server_loop
 
 import dolphin_memory_engine as dme
@@ -295,40 +295,16 @@ class PCContext(BaseContext):
                     warned_items.append(pc_item)
                 continue
             if pc_item["data"].item_type == PCItemType.ITEM:
-                use_addr = 0x0
-                use_addr_amount = 0x0
-                amount_to_increase = 0x0
-                while use_addr == 0x0:
-                    # Input fail condition (PC item storage is not infinite)
-                    ptr_offset = 0x7974 + amount_to_increase
-                    pc_item_id = read_short(ptr_addr(PRIMARY_POINTER, ptr_offset))
-                    if pc_item_id == pc_item["data"].item_id or pc_item_id == 0:
-                        use_addr = ptr_addr(PRIMARY_POINTER, ptr_offset)
-                        use_addr_amount = ptr_addr(PRIMARY_POINTER, ptr_offset + 0x2)
-                        break
-                    amount_to_increase += 0x4
-                cur_item_amount = read_short(use_addr_amount) + pc_item["data"].amount
-                await write_bytes_and_validate(use_addr, int.to_bytes(pc_item["data"].item_id, 2))
-                await write_bytes_and_validate(use_addr_amount, int.to_bytes(cur_item_amount, 2))
-                # Handle adding an item to the PC storage
-                pass
+                success = await self.write_into_items_bag(pc_item)
+                if not success:
+                    logger.info(f"Item {pc_item["name"]} will be added to PC Storage")
+                    await self.write_into_pc_storage(pc_item)
+
             elif pc_item["data"].item_type == PCItemType.KEYITEM:
-                # Handle adding an item to the keyitem pocket
-                use_addr = 0x0
-                amount_to_increase = 0x0
-                while use_addr == 0x0:
-                    # Input fail condition (Key Items bag is not infinite)
-                    ptr_offset = KEY_ITEMS_BAG_START_OFFSET + amount_to_increase
-                    key_item_id = read_short(ptr_addr(PRIMARY_POINTER, ptr_offset))
-                    if key_item_id == pc_item["data"].item_id:
-                        logger.error(f"Item {pc_item["name"]} is a Key Item and should only exist once! Please inform the Pokemon Colosseum AP devs.")
-                        break
-                    if key_item_id == 0:
-                        use_addr = ptr_addr(PRIMARY_POINTER, ptr_offset)
-                        break
-                    amount_to_increase += 0x4
-                if (use_addr != 0x0):
-                    await write_bytes_and_validate(use_addr, int.to_bytes(pc_item["data"].item_id, 2))
+                await self.write_item_into_list(pc_item, KEY_ITEMS_BAG_START_OFFSET, 0xAC)
+                #Error Handling when full
+                pass
+
             elif pc_item["data"].item_type == PCItemType.POKEMON:
                 # Handle adding a pokemon to the PC
                 use_addr = 0x0
@@ -345,6 +321,35 @@ class PCContext(BaseContext):
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET), int.to_bytes(last_recv_idx, 2))
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET), int.to_bytes(1, 1))
 
+    async def write_into_items_bag(self, pc_item: ItemDesc) -> bool:
+        # TODO Add Item to different Pouches (Item, TM, Berry, Balls)
+        return await self.write_item_into_list(pc_item, ITEMS_BAG_START_OFFSET, 0x50)
+
+    async def write_into_pc_storage(self, pc_item: ItemDesc) -> bool:
+        return await self.write_item_into_list(pc_item, 0x7974, 0x200)
+    
+    async def write_item_into_list(self, pc_item: ItemDesc, start_offset, max_list_space) -> bool:        
+        use_addr = 0x0
+        use_addr_amount = 0x0
+        amount_to_increase = 0x0
+        while use_addr == 0x0:
+            if amount_to_increase >= max_list_space: #Max space for items in either bag or PC storage
+                logger.info(f"Item {pc_item["name"]} could not be placed in list. No more space available.")
+                return False            
+
+            ptr_offset = start_offset + amount_to_increase
+            pc_item_id = read_short(ptr_addr(PRIMARY_POINTER, ptr_offset))
+            if pc_item_id == pc_item["data"].item_id or pc_item_id == 0:
+                use_addr = ptr_addr(PRIMARY_POINTER, ptr_offset)
+                use_addr_amount = ptr_addr(PRIMARY_POINTER, ptr_offset + 0x2)
+                break
+            amount_to_increase += 0x4
+        cur_item_amount = read_short(use_addr_amount) + pc_item["data"].amount
+        await write_bytes_and_validate(use_addr, int.to_bytes(pc_item["data"].item_id, 2))
+        await write_bytes_and_validate(use_addr_amount, int.to_bytes(cur_item_amount, 2))
+
+        return True
+ 
     async def dolphin_sync_main_task(self):
         logger.info(f"Using Pokemon Colosseum client {CLIENT_VERSION}")
         logger.info("Starting Dolphin connector. Use /dolphin for status information.")
