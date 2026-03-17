@@ -15,6 +15,9 @@ class PCItemType(Enum):
     POKEMON = 0
     KEYITEM = 1
     ITEM = 2
+    POKEBALL = 3
+    BERRY = 4 
+    TM = 5
 
 class PCRamData(NamedTuple):
     """

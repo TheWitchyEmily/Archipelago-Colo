@@ -25,15 +25,24 @@ OUTSKIRT_STAND_ID = 1
 PHENAC_CITY_ID = 2
 MAYOR_HOUSE_ID = 3
 PREGYM_ID = 4
+CONSTRUCTION_LOT_ID = 5
+PYRITE_ID = 6
 
 # Primary pointer addresses
 PRIMARY_POINTER = 0x8047ADB8
 AP_ITEM_INDEX_OFFSET = 0x11
 SAVE_COUNT_OFFSET = 0x13
-PARTY_1_ID_OFFSET = 0xA1
 ITEM_START_OFFSET = 0x7976
 B1_S1_OFFSET = 0xB9C
 SLOT_OFFSET = 0x138 # Only used to add to B1_S1 to check where the next empty slot is for a new shadow pokemon
+
+#Party Offsets
+PARTY_1_ID_OFFSET = 0xA1
+PARTY_2_ID_OFFSET = 0x1D9
+PARTY_3_ID_OFFSET = 0x311
+PARTY_4_ID_OFFSET = 0x449
+PARTY_5_ID_OFFSET = 0x581
+PARTY_6_ID_OFFSET = 0x6B9
 
 # Pokemon stat offset (starting from the first byte of the Pokemon's data)
 NATURE_OFFSET = 0x4
@@ -63,11 +72,21 @@ UNKNOWN_REQUIRED = 0x8 # (required to be 0B 03 02 02?)
 CURRENT_EXP = 0x5C
 MOVE_1_OFFSET = 0x78
 
+# Bag Offsets to add, remove, or manipulate items in the inventory. Items are 4 Bytes, 2 for Id and 2 for quantity
+ITEMS_BAG_START_OFFSET = 0x7F0 #Max 20 Item Limit
+KEY_ITEMS_BAG_START_OFFSET = 0x840 #Max 43 Items
+BALLS_BAG_START_OFFSET = 0x8EC # Max 16 Items
+TMS_BAG_START_OFFSET = 0x92C # Max 64 Items
+BERRIES_BAG_START_OFFSET = 0xA2C # Max 40 Items
+
 #General addresses
 MAP_ID_ADDR = 0x80538DE0
 IN_BATTLE = 0x8040836F
 BATTLE_WIN_CHECK = 0x8046D767
 OPPONENT_ID = 0x80473CA1
+
+#Misc
+RUI_NAME = 0x80409632 # Max 7 characters, 2 Byte per character. https://bulbapedia.bulbagarden.net/wiki/GameCube_character_encoding_(Generation_III)#Pok%C3%A9mon_Colosseum_and_XD
 
 # Special location codes
 NO_DISABLE = 0x5 # For trainer location type, do not disable the scanning loop as another check relies on the same information
