@@ -298,15 +298,22 @@ class PCContext(BaseContext):
                 continue
 
             if pc_item["data"].item_type == PCItemType.ITEM:
-                success = await self.write_into_items_bag(pc_item)
-                if not success:
-                    logger.info(f"Item {pc_item["name"]} will be added to PC Storage")
-                    await self.write_into_pc_storage(pc_item)
+                success = await self.write_into_bag(ITEMS_BAG_START_OFFSET, 0x50, pc_item)
+            
+            if pc_item["data"].item_type == PCItemType.POKEBALL:
+                success = await self.write_into_bag(BALLS_BAG_START_OFFSET, 0x40, pc_item)
+            
+            if pc_item["data"].item_type == PCItemType.BERRY:
+                success = await self.write_into_bag(BERRIES_BAG_START_OFFSET, 0xA0, pc_item)
+            
+            if pc_item["data"].item_type == PCItemType.TM:
+                success = await self.write_into_bag(TMS_BAG_START_OFFSET, 0x100, pc_item)
 
             elif pc_item["data"].item_type == PCItemType.KEYITEM:
-                await self.write_item_into_list(pc_item, KEY_ITEMS_BAG_START_OFFSET, 0xAC)
-                #Error Handling when full
-                pass
+                success = await self.write_item_into_list(pc_item, KEY_ITEMS_BAG_START_OFFSET, 0xAC)
+                
+                if not success:                    
+                    logger.error(f"Item {pc_item["name"]} could not be added to Key Items because its full! Please inform the Pokemon Colosseum AP devs.")
 
             elif pc_item["data"].item_type == PCItemType.POKEMON:
                 # Handle adding a pokemon to the PC
@@ -325,20 +332,24 @@ class PCContext(BaseContext):
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET), int.to_bytes(last_recv_idx, 2))
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET), int.to_bytes(1, 1))
 
-    async def write_into_items_bag(self, pc_item: ItemDesc) -> bool:
-        # TODO Add Item to different Pouches (Item, TM, Berry, Balls)
-        return await self.write_item_into_list(pc_item, ITEMS_BAG_START_OFFSET, 0x50)
+    async def write_into_bag(self, bag_offset, max_items, pc_item: ItemDesc) -> bool:
+        success = await self.write_item_into_list(pc_item, bag_offset, max_items)
+
+        if not success:
+            logger.info(f"Item {pc_item["name"]} could not be placed in list. No more space available. Placing in PC storage instead.")
+            success = await self.write_into_pc_storage(pc_item)
+
+        return success    
 
     async def write_into_pc_storage(self, pc_item: ItemDesc) -> bool:
-        return await self.write_item_into_list(pc_item, 0x7974, 0x200)
+        return await self.write_item_into_list(pc_item, 0x7974, 0x200) #TODO How Much space in the storage?
     
     async def write_item_into_list(self, pc_item: ItemDesc, start_offset, max_list_space) -> bool:        
         use_addr = 0x0
         use_addr_amount = 0x0
         amount_to_increase = 0x0
         while use_addr == 0x0:
-            if amount_to_increase >= max_list_space: #Max space for items in either bag or PC storage
-                logger.info(f"Item {pc_item["name"]} could not be placed in list. No more space available.")
+            if amount_to_increase >= max_list_space:
                 return False            
 
             ptr_offset = start_offset + amount_to_increase
