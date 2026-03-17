@@ -100,21 +100,21 @@ phenac_colosseum_r4_locations: Dict[str, PCLocData] = {
 phenac_colosseum_locations = phenac_colosseum_r1_locations | phenac_colosseum_r2_locations | phenac_colosseum_r3_locations | phenac_colosseum_r4_locations
 
 pyrite_locations: Dict[str, PCLocData] = {
-    Locations.Trainers.emok: None,
-    Locations.Trainers.calda: None,
-    Locations.Trainers.lon: None,
-    Locations.Trainers.vant: None,
-    Locations.Trainers.nover: None,
-    Locations.Trainers.diogo: None,
-    Locations.Trainers.leba: None,
-    Locations.Trainers.divel: None,
+    Locations.Trainers.emok: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0E8, bit_pos=6), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
+    Locations.Trainers.calda: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BEC9, bit_pos=3), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
+    Locations.Trainers.lon: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BDC3, bit_pos=5), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
+    Locations.Trainers.vant: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BDC3, bit_pos=4), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
+    Locations.Trainers.nover: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BDC3, bit_pos=0), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
+    Locations.Trainers.diogo: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BDC3, bit_pos=1), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
+    Locations.Trainers.leba: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BDC3, bit_pos=2), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
+    Locations.Trainers.divel: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BDC3, bit_pos=3), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
     Locations.Trainers.cail: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0EB, bit_pos=4), type=PCLocType.TRAINER, map_id=[PYRITE_ID]),
-    Locations.ShadowPokemon.slugma_capture: None,
-    Locations.ShadowPokemon.misdreavus_capture: None,
-    Locations.ShadowPokemon.noctowl_capture: None,
-    Locations.ShadowPokemon.flaffy_capture: None,
-    Locations.ShadowPokemon.skiploom_capture: None,
-    Locations.ShadowPokemon.quagsire_capture: None,
+    Locations.ShadowPokemon.slugma_capture:  PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=7), type=PCLocType.SHADOW, map_id=[PYRITE_ID]),
+    Locations.ShadowPokemon.misdreavus_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=4), type=PCLocType.SHADOW, map_id=[PYRITE_ID]),
+    Locations.ShadowPokemon.noctowl_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=0), type=PCLocType.SHADOW, map_id=[PYRITE_ID]),
+    Locations.ShadowPokemon.flaffy_capture:  PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=1), type=PCLocType.SHADOW, map_id=[PYRITE_ID]),
+    Locations.ShadowPokemon.skiploom_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=2), type=PCLocType.SHADOW, map_id=[PYRITE_ID]),
+    Locations.ShadowPokemon.quagsire_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=3), type=PCLocType.SHADOW, map_id=[PYRITE_ID]),
     Locations.ShadowPokemon.furret_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=6), type=PCLocType.SHADOW, map_id=[PYRITE_ID]),
     Locations.Misc.jail_key: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5F, bit_pos=5), type=PCLocType.ITEM, map_id=[PYRITE_POLICE_DEPARTMENT_ID]),
 }
@@ -129,7 +129,7 @@ pyrite_jail_cell_locations: Dict[str, PCLocData] = {
 }
 
 construction_locations: Dict[str, PCLocData] = {
-    Locations.Misc.windmill_gear: None
+    Locations.Misc.windmill_gear: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BEC8, bit_pos=7), type=PCLocType.ITEM, map_id=[CONSTRUCTION_LOT_ID])
 }
 
 pyrite_colosseum_locations: Dict[str, PCLocData] = {
