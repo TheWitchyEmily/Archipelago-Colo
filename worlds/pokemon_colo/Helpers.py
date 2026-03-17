@@ -19,6 +19,45 @@ class PCItemType(Enum):
     BERRY = 4 
     TM = 5
 
+class Natures(Enum):
+    HARDY = 0
+    LONELY = 1
+    ADAMANT = 2
+    NAUGHTY = 3
+    BRAVE = 4
+    BOLD = 5
+    DOCILE = 6
+    IMPISH = 7
+    LAX = 8
+    RELAXED = 9
+    MODEST = 10
+    MILD = 11
+    BASHFUL = 12
+    RASH = 13
+    QUIET = 14
+    CALM = 15
+    GENTLE = 16
+    CAREFUL = 17
+    QUIRKY = 18
+    SASSY = 19
+    TIMID = 20
+    HASTY = 21
+    JOLLY = 22
+    NAIVE = 23
+    SERIOUS = 24
+
+class StatName(Enum):
+    ATTACK = 0
+    DEFENSE = 1
+    SP_ATTACK = 2
+    SP_DEFENSE = 3
+    SPEED = 4
+
+class NatureInfo(NamedTuple):
+    increase: StatName
+    decrease: StatName
+
+
 class PCRamData(NamedTuple):
     """
     Pokemon Colosseum Location RAM Representation. Any parameters can be left empty.
