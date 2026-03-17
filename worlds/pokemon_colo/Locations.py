@@ -115,13 +115,17 @@ pyrite_locations: Dict[str, PCLocData] = {
     Locations.ShadowPokemon.flaffy_capture: None,
     Locations.ShadowPokemon.skiploom_capture: None,
     Locations.ShadowPokemon.quagsire_capture: None,
-    Locations.ShadowPokemon.furret_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=6), type=PCLocType.SHADOW, map_id=[PYRITE_ID])
+    Locations.ShadowPokemon.furret_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=6), type=PCLocType.SHADOW, map_id=[PYRITE_ID]),
+    Locations.Misc.jail_key: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5F, bit_pos=5), type=PCLocType.ITEM, map_id=[PYRITE_POLICE_DEPARTMENT_ID]),
 }
 
 pyrite_2_locations: Dict[str, PCLocData] = {
-    Locations.Misc.jail_key: None,
     Locations.Misc.elevator_key: None,
     Locations.Trainers.hader: None
+}
+
+pyrite_jail_cell_locations: Dict[str, PCLocData] = {
+    Locations.Misc.tm46: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0E4, bit_pos=7), type=PCLocType.ITEM, map_id=[PYRITE_POLICE_DEPARTMENT_ID])
 }
 
 construction_locations: Dict[str, PCLocData] = {
@@ -496,7 +500,7 @@ all_pyrite = pyrite_locations | pyrite_colosseum_locations | pyrite_building_loc
 all_agate = agate_locations | relic_stone_locations
 all_postgame = postgame_purify
 
-all_locations = start_locations | starter_pokemon | outside_city_locations | all_phenac | all_pyrite | all_agate | all_postgame | construction_locations | mt_battle_locations | pyrite_cave_extra | pyrite_2_locations | under_locations | lab_locations | realgam_tower_locations
+all_locations = start_locations | starter_pokemon | outside_city_locations | all_phenac | all_pyrite | all_agate | all_postgame | construction_locations | mt_battle_locations | pyrite_cave_extra | pyrite_2_locations | pyrite_jail_cell_locations | under_locations | lab_locations | realgam_tower_locations
 
 regions_to_locations: Dict[str, Dict[str, PCLocData]] = {
     Regions.menu: start_locations,
@@ -525,6 +529,7 @@ regions_to_locations: Dict[str, Dict[str, PCLocData]] = {
     Regions.pyrite_colosseum_r3: [],
     Regions.pyrite_colosseum_r4: [],
     Regions.pyrite_2: pyrite_2_locations,
+    Regions.pyrite_jail_cell: pyrite_jail_cell_locations,
     Regions.construction: construction_locations,
     Regions.agate: agate_locations,
     Regions.purify: [],

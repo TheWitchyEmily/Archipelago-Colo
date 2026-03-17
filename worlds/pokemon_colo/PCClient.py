@@ -244,6 +244,18 @@ class PCContext(BaseContext):
             map = CONSTRUCTION_LOT_ID
         elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0xFE and byte4 == 0xC4:
             map = PYRITE_ID
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x1C and byte4 == 0x28:
+            map = PYRITE_POLICE_DEPARTMENT_ID
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x1C and byte4 == 0x74:
+            map = PYRITE_FORTUNE_TELLING_ID
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x1D and byte4 == 0x0C:
+            map = PYRITE_DUKINGS_HOUSE_ID
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x0A and byte4 == 0x0C:
+            map = PYRITE_GRAND_HOTEL_ID
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x1D and byte4 == 0xF0:
+            map = PYRITE_WINDMILL_ID
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x1D and byte4 == 0x58:
+            map = PYRITE_DUKE_HIDEOUT_ID
         return map
 
     async def pc_check_locations(self):
