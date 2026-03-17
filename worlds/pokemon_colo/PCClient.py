@@ -345,7 +345,7 @@ class PCContext(BaseContext):
 
             if pc_item["data"] is None:
                 if pc_item not in warned_items:
-                    logger.error(f"Item {pc_item["name"]} does not have any data associated with it! Please inform the Pokemon Colosseum AP devs.")
+                    logger.error(f"Item {pc_item['name']} does not have any data associated with it! Please inform the Pokemon Colosseum AP devs.")
                     warned_items.append(pc_item)
                 continue
 
@@ -365,7 +365,7 @@ class PCContext(BaseContext):
                 success = await self.write_item_into_list(pc_item, KEY_ITEMS_BAG_START_OFFSET, 0xAC)
                 
                 if not success:                    
-                    logger.error(f"Item {pc_item["name"]} could not be added to Key Items because its full! Please inform the Pokemon Colosseum AP devs.")
+                    logger.error(f"Item {pc_item['name']} could not be added to Key Items because its full! Please inform the Pokemon Colosseum AP devs.")
 
             elif pc_item["data"].item_type == PCItemType.POKEMON:
                 # Handle adding a pokemon to the PC
@@ -398,7 +398,7 @@ class PCContext(BaseContext):
         success = await self.write_item_into_list(pc_item, bag_offset, max_items)
 
         if not success:
-            logger.info(f"Item {pc_item["name"]} could not be placed in list. No more space available. Placing in PC storage instead.")
+            logger.info(f"Item {pc_item['name']} could not be placed in list. No more space available. Placing in PC storage instead.")
             success = await self.write_into_pc_storage(pc_item)
 
         return success    
