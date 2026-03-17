@@ -33,7 +33,17 @@ def write_short(console_addr: int, value: int):
     dme.write_bytes(console_addr, value.to_bytes(2))
 
 def read_string(console_addr: int, strlen: int):
-    return sbf.byte_string_strip_null_terminator(dme.read_bytes(console_addr, strlen))
+    tmp_str = ""
+    tmp = ""
+    amt_to_increase = 0
+    while True:
+        tmp += sbf.byte_string_strip_null_terminator(dme.read_byte(console_addr + amt_to_increase, 1))
+        if tmp == "" or (amt_to_increase / 2) > strlen:
+            break
+        tmp_str += tmp
+        amt_to_increase += 2
+
+    return tmp_str
 
 async def write_bytes_and_validate(addr: int, value: bytes) -> None:
     dme.write_bytes(addr, value)
