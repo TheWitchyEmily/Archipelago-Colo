@@ -88,6 +88,8 @@ class PCContext(BaseContext):
         self.last_not_ingame = time.time()
         self.arg_seed = ""
         self.idx_check = 0
+        self.ot_name = ""
+        self.ot_id = 0
 
         # Slot options for unlocks
         self.goal = None
@@ -341,6 +343,10 @@ class PCContext(BaseContext):
         
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET), int.to_bytes(last_recv_idx, 2))
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET), int.to_bytes(1, 1))
+
+    async def special_startup(self):
+        self.ot_id = read_short(ptr_addr(PRIMARY_POINTER, PARTY_1_ID_OFFSET) + TRAINER_ID_OFFSET)
+        self.ot_name = read_string(ptr_addr(PRIMARY_POINTER, PARTY_1_ID_OFFSET) + OT_NAME_OFFSET, 20)
 
     async def write_into_bag(self, bag_offset, max_items, pc_item: ItemDesc) -> bool:
         success = await self.write_item_into_list(pc_item, bag_offset, max_items)
