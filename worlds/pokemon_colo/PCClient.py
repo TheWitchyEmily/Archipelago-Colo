@@ -1,5 +1,6 @@
 import asyncio, time, copy, sys
 from typing import Optional
+import math
 
 # AP imports
 import Utils
@@ -48,9 +49,36 @@ def read_string(console_addr: int, strlen: int):
 async def write_bytes_and_validate(addr: int, value: bytes) -> None:
     dme.write_bytes(addr, value)
 
+async def write_string(addr: int, str: str, captial: bool = False) -> None:
+    added_index = 0
+    for char in str:
+        if captial:
+            char = char.upper()
+        dme.write_byte(addr + added_index, ord(char))
+        added_index += 2
+
 def bits(byte: int):
     return [byte >> i & 1 for i in range(8)]
 
+def calc_hp(level: int) -> int:
+    base = 0 # Find out how to get base stat
+    iv = 0 # Generate HP IV (possibly elsewhere)
+    return math.floor(((2*base+iv)*level)/100)+level+10
+
+def calc_other_stat(level: int, nature: int = 1) -> int:
+    base = 0
+    iv = 0
+    return math.floor(((((2*base+iv)*level)/100)+5)*nature)
+
+def calc_stat(id: int, level: int, nature_name: str, stat: int = 0):
+    """
+    Calculates a given stat for creating the pokemon
+
+    :param id: The internal ID of the Pokemon
+    :param level: The level of the Pokemon
+    :param natu
+    """
+    pass
 class PCCommandProcessor(BaseCommandProcessor):
     def _cmd_dolphin(self):
         """Prints current Dolphin status to the client."""
