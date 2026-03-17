@@ -478,6 +478,8 @@ class PCContext(BaseContext):
 
                     # Lastly check any locations
                     if self.get_map_id() != MENU_ID:
+                        if self.ot_id == 0:
+                            await self.special_startup()
                         await self.pc_check_locations()
                         await self.give_pc_items()
                     await self.wait_for_next_loop(WAIT_TIMER_SHORT)
