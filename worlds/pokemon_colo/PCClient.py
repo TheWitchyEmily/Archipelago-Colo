@@ -366,9 +366,15 @@ class PCContext(BaseContext):
                         use_addr = ptr_addr(PRIMARY_POINTER, offset)
                         break
                     amount_to_increase += SLOT_OFFSET
-                await write_bytes_and_validate(use_addr, int.to_bytes(pc_item["data"].item_id, 2))
-                await write_bytes_and_validate(use_addr + UNKNOWN_REQUIRED, int.to_bytes(0x0B030202, 4))
-        
+                await write_bytes_and_validate(use_addr, int.to_bytes(pc_item["data"].item_id, 2)) # Set Pokemon internal ID to make it the Pokemon
+                await write_bytes_and_validate(use_addr + CAUGHT_POKEBALL, int.to_bytes(4, 1)) # Set the caught ball to Pokeball
+                await write_bytes_and_validate(use_addr + UNKNOWN_REQUIRED, int.to_bytes(0x0B030202, 4)) # Set required unknown values to what they need to be
+                await write_string(use_addr + NICKNAME_OFFSET, pc_item_name, True) # Add name to the Pokemon
+                await write_bytes_and_validate(use_addr + LEVEL_OFFSET, int.to_bytes(pc_item["data"].level, 1)) # Set the Pokemon's level
+                await write_bytes_and_validate(use_addr + MET_LEVEL, int.to_bytes(pc_item["data"].level, 1)) # Set the met level to the Pokemon's level
+                await write_bytes_and_validate(use_addr + SHADOW_ID_OFFSET, int.to_bytes(pc_item["data"].shadow_id, 1)) # Set the Shadow ID of the Pokemon
+                await write_bytes_and_validate(use_addr + TRAINER_ID_OFFSET, int.to_bytes(self.ot_id, 2)) # Add Trainer ID to the Pokemon
+                await write_string(use_addr + OT_NAME_OFFSET, self.ot_name, False) # Add OT Name to the Pokemon
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET), int.to_bytes(last_recv_idx, 2))
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET), int.to_bytes(1, 1))
 
