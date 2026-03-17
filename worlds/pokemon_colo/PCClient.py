@@ -285,15 +285,18 @@ class PCContext(BaseContext):
             self.idx_check = last_recv_idx
             pc_item_name = self.item_names.lookup_in_game(item.item)
             pc_item: ItemDesc = None
+
             for tmp_item in all_items:
                 if pc_item_name == tmp_item["name"]:
                     pc_item = tmp_item
                     break
+
             if pc_item["data"] is None:
                 if pc_item not in warned_items:
                     logger.error(f"Item {pc_item["name"]} does not have any data associated with it! Please inform the Pokemon Colosseum AP devs.")
                     warned_items.append(pc_item)
                 continue
+
             if pc_item["data"].item_type == PCItemType.ITEM:
                 success = await self.write_into_items_bag(pc_item)
                 if not success:
@@ -318,6 +321,7 @@ class PCContext(BaseContext):
                     amount_to_increase += SLOT_OFFSET
                 await write_bytes_and_validate(use_addr, int.to_bytes(pc_item["data"].item_id, 2))
                 await write_bytes_and_validate(use_addr + UNKNOWN_REQUIRED, int.to_bytes(0x0B030202, 4))
+        
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET), int.to_bytes(last_recv_idx, 2))
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET), int.to_bytes(1, 1))
 
