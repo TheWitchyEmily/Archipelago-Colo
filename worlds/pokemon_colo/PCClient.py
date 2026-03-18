@@ -38,7 +38,7 @@ def read_string(console_addr: int, strlen: int):
     tmp = ""
     amt_to_increase = 0
     while True:
-        tmp += sbf.byte_string_strip_null_terminator(dme.read_byte(console_addr + amt_to_increase, 1))
+        tmp += sbf.byte_string_strip_null_terminator(dme.read_bytes(console_addr + amt_to_increase, 1))
         if tmp == "" or (amt_to_increase / 2) > strlen:
             break
         tmp_str += tmp
@@ -303,8 +303,6 @@ class PCContext(BaseContext):
         match loc_data.type:
             case PCLocType.START:
                 if cur_map == OUTSKIRT_STAND_ID:
-                    logger.info("Until either it is patched out or a new area in memory is found, item checks will only be given after the first save of the game.")
-                    logger.info("The quickest save point is the Pokemon Center right after Shady Guy Folly.")
                     return True
             case PCLocType.TRAINER:
                 if self.trainer_win:
@@ -327,8 +325,7 @@ class PCContext(BaseContext):
 
     async def give_pc_items(self):
         last_recv_idx = read_short(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET))
-        save_count = read_short(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET))
-        if len(self.items_received) == last_recv_idx or save_count == 0:
+        if len(self.items_received) == last_recv_idx:
             return
 
         recv_items = self.items_received[last_recv_idx:]
@@ -388,7 +385,6 @@ class PCContext(BaseContext):
                 await write_bytes_and_validate(use_addr + TRAINER_ID_OFFSET, int.to_bytes(self.ot_id, 2)) # Add Trainer ID to the Pokemon
                 await write_string(use_addr + OT_NAME_OFFSET, self.ot_name, False) # Add OT Name to the Pokemon
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET), int.to_bytes(last_recv_idx, 2))
-        await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET), int.to_bytes(1, 1))
 
     async def special_startup(self):
         self.ot_id = read_short(ptr_addr(PRIMARY_POINTER, PARTY_1_ID_OFFSET) + TRAINER_ID_OFFSET)
@@ -483,10 +479,9 @@ class PCContext(BaseContext):
                             await self.wait_for_next_loop(WAIT_TIMER_LONG)
                             continue
 
-                        arg_seed = read_string(0x80000001, 3)
-                        if not self.arg_seed.startswith(arg_seed):
+                        if not self.arg_seed.startswith(sbf.byte_string_strip_null_terminator(dme.read_bytes(0x80000001, 3))):
                             raise Exception(
-                                "Incorrected Randomized Pokemon Colosseum ISO file selected. The seed does not match." +
+                                "Incorrect Randomized Pokemon Colosseum ISO file selected. The seed does not match." +
                                 "Please verify that you are using the right ISO/seed/APPC file.")
 
                         self.dolphin_status = CONNECTION_CONNECTED
