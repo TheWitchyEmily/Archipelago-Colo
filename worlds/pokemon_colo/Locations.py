@@ -133,46 +133,46 @@ construction_locations: Dict[str, PCLocData] = {
 }
 
 pyrite_colosseum_locations: Dict[str, PCLocData] = {
-    Locations.Misc.tm06: None,
-    Locations.ColosseumTrainers.pyrite_r0_1: None,
-    Locations.ColosseumTrainers.pyrite_r0_2: None,
-    Locations.ColosseumTrainers.pyrite_r0_3: None,
-    Locations.ColosseumTrainers.pyrite_r0_4: None,
-    Locations.ColosseumTrainers.pyrite_r0_win: None
+    Locations.Misc.tm06: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C118, bit_pos=0), type=PCLocType.ITEM, map_id=[PYRITE_COLOSSEUM_ID]),
+    Locations.ColosseumTrainers.pyrite_r0_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C12E, bit_pos=7), type=PCLocType.TRAINER, map_id=[PYRITE_COLOSSEUM_ID]),
+    Locations.ColosseumTrainers.pyrite_r0_2: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C12D, bit_pos=0), type=PCLocType.TRAINER, map_id=[PYRITE_COLOSSEUM_ID]),
+    Locations.ColosseumTrainers.pyrite_r0_3: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C12D, bit_pos=1), type=PCLocType.TRAINER, map_id=[PYRITE_COLOSSEUM_ID]),
+    Locations.ColosseumTrainers.pyrite_r0_4: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECF, bit_pos=1), type=PCLocType.TRAINER, map_id=[PYRITE_COLOSSEUM_ID]),
 }
 
 pyrite_building_1f_locations: Dict[str, PCLocData] = {
-    Locations.Misc.ein_file_h: None,
-    Locations.Trainers.nore: None,
-    Locations.Trainers.kai: None,
-    Locations.Trainers.pike: None,
-    Locations.ShadowPokemon.yanma_capture: None,
-    Locations.Chests.pyrite_building_chest_3: None
+    Locations.Misc.ein_file_h: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5D, bit_pos=6), type=PCLocType.ITEM, map_id=[PYRITE_BUILDING_1F_ID]),
+    Locations.Trainers.nore: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BDDC, bit_pos=4), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_1F_ID]),
+    Locations.Trainers.kai: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F2, bit_pos=6), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_1F_ID]),
+    Locations.Trainers.pike: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F2, bit_pos=7), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_1F_ID]),
+    Locations.ShadowPokemon.yanma_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C074, bit_pos=5), type=PCLocType.SHADOW, map_id=[PYRITE_BUILDING_1F_ID]),
+    Locations.Chests.pyrite_building_chest_3:  PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5E, bit_pos=0), type=PCLocType.ITEM, map_id=[PYRITE_BUILDING_1F_ID])
 }
 
 pyrite_building_2f_locations: Dict[str, PCLocData] = {
-    Locations.Trainers.geats: None,
-    Locations.Trainers.geare: None,
-    Locations.Trainers.loba: None,
-    Locations.Trainers.akmen: None,
-    Locations.Chests.pyrite_building_chest_1: None
+    Locations.Trainers.geats: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F1, bit_pos=0), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_2F_ID]),
+    Locations.Trainers.geare: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F1, bit_pos=1), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_2F_ID]),
+    Locations.Trainers.loba: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F1, bit_pos=3), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_2F_ID]),
+    Locations.Trainers.akmen: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F1, bit_pos=2), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_2F_ID]),
+    Locations.Chests.pyrite_building_chest_1: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5E, bit_pos=1), type=PCLocType.ITEM, map_id=[PYRITE_BUILDING_2F_ID])
 }
 
 pyrite_building_3f_locations: Dict[str, PCLocData] = {
-    Locations.Trainers.raleen: None,
-    Locations.Trainers.toti: None,
-    Locations.Trainers.elidi: None,
-    Locations.Chests.pyrite_building_chest_2: None
+    Locations.Trainers.raleen: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F1, bit_pos=4), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_3F_ID]),
+    Locations.Trainers.tura: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F1, bit_pos=5), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_3F_ID]),
+    Locations.Trainers.toti: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F1, bit_pos=6), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_3F_ID]),
+    Locations.Trainers.elidi: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C0F1, bit_pos=7), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_3F_ID]),
+    Locations.Chests.pyrite_building_chest_2: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5E, bit_pos=2), type=PCLocType.ITEM, map_id=[PYRITE_BUILDING_3F_ID])
 }
 
 pyrite_building_roof_locations: Dict[str, PCLocData] = {
-    Locations.Misc.ein_file_s: None,
-    Locations.Trainers.reath: None,
-    Locations.Trainers.ferma: None,
-    Locations.Trainers.doken: None,
-    Locations.ShadowPokemon.remoraid_capture: None,
-    Locations.ShadowPokemon.mantine_capture: None,
-    Locations.ShadowPokemon.qwilfish_capture: None
+    Locations.Misc.ein_file_s: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BE5E, bit_pos=3), type=PCLocType.ITEM, map_id=[PYRITE_BUILDING_ROOF_INSIDE_ID]),
+    Locations.Trainers.reath: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECF, bit_pos=5), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_ROOF_INSIDE_ID]),
+    Locations.Trainers.ferma: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECF, bit_pos=6), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_ROOF_INSIDE_ID]),
+    Locations.Trainers.doken: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECE, bit_pos=2), type=PCLocType.TRAINER, map_id=[PYRITE_BUILDING_ROOF_ID]),
+    Locations.ShadowPokemon.remoraid_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C07B, bit_pos=0), type=PCLocType.SHADOW, map_id=[PYRITE_BUILDING_ROOF_INSIDE_ID]),
+    Locations.ShadowPokemon.mantine_capture:  PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C07B, bit_pos=1), type=PCLocType.SHADOW, map_id=[PYRITE_BUILDING_ROOF_INSIDE_ID]),
+    Locations.ShadowPokemon.qwilfish_capture: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C07B, bit_pos=2), type=PCLocType.SHADOW, map_id=[PYRITE_BUILDING_ROOF_ID])
 }
 
 pyrite_building_locations = pyrite_building_1f_locations | pyrite_building_2f_locations | pyrite_building_3f_locations | pyrite_building_roof_locations

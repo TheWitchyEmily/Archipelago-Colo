@@ -182,7 +182,6 @@ class Locations:
         pyrite_r0_2 = "Pyrite Colosseum R0 T2 - Chaser Tisler Defeated"
         pyrite_r0_3 = "Pyrite Colosseum R0 T3 - Bandana Guy Vilch Defeated"
         pyrite_r0_4 = "Pyrite Colosseum R0 T4 - Bodybuilder Mirez Defeated"
-        pyrite_r0_win = "Pyrite Colosseum R0 - Win"
 
     class Misc:
         espeon_umbreon = "Start - Obtain Espeon and Umbreon"
