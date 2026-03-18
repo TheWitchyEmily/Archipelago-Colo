@@ -43,9 +43,8 @@ PYRITE_ID = 6
 
 # Primary pointer addresses
 PRIMARY_POINTER = 0x8047ADB8
-AP_ITEM_INDEX_OFFSET = 0x11
-SAVE_COUNT_OFFSET = 0x13
-ITEM_START_OFFSET = 0x7976
+AP_ITEM_INDEX_OFFSET = 0xB87
+ITEM_START_OFFSET = 0x7974
 B1_S1_OFFSET = 0xB9C
 SLOT_OFFSET = 0x138 # Only used to add to B1_S1 to check where the next empty slot is for a new shadow pokemon
 

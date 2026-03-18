@@ -291,8 +291,6 @@ class PCContext(BaseContext):
         match loc_data.type:
             case PCLocType.START:
                 if cur_map == OUTSKIRT_STAND_ID:
-                    logger.info("Until either it is patched out or a new area in memory is found, item checks will only be given after the first save of the game.")
-                    logger.info("The quickest save point is the Pokemon Center right after Shady Guy Folly.")
                     return True
             case PCLocType.TRAINER:
                 if self.trainer_win:
@@ -315,8 +313,7 @@ class PCContext(BaseContext):
 
     async def give_pc_items(self):
         last_recv_idx = read_short(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET))
-        save_count = read_short(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET))
-        if len(self.items_received) == last_recv_idx or save_count == 0:
+        if len(self.items_received) == last_recv_idx:
             return
 
         recv_items = self.items_received[last_recv_idx:]
@@ -376,7 +373,6 @@ class PCContext(BaseContext):
                 await write_bytes_and_validate(use_addr + TRAINER_ID_OFFSET, int.to_bytes(self.ot_id, 2)) # Add Trainer ID to the Pokemon
                 await write_string(use_addr + OT_NAME_OFFSET, self.ot_name, False) # Add OT Name to the Pokemon
         await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, AP_ITEM_INDEX_OFFSET), int.to_bytes(last_recv_idx, 2))
-        await write_bytes_and_validate(ptr_addr(PRIMARY_POINTER, SAVE_COUNT_OFFSET), int.to_bytes(1, 1))
 
     async def special_startup(self):
         self.ot_id = read_short(ptr_addr(PRIMARY_POINTER, PARTY_1_ID_OFFSET) + TRAINER_ID_OFFSET)
