@@ -38,7 +38,7 @@ def read_string(console_addr: int, strlen: int):
     tmp = ""
     amt_to_increase = 0
     while True:
-        tmp += sbf.byte_string_strip_null_terminator(dme.read_byte(console_addr + amt_to_increase, 1))
+        tmp += sbf.byte_string_strip_null_terminator(dme.read_bytes(console_addr + amt_to_increase, 1))
         if tmp == "" or (amt_to_increase / 2) > strlen:
             break
         tmp_str += tmp
