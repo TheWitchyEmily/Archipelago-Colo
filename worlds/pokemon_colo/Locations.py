@@ -138,6 +138,7 @@ pyrite_colosseum_locations: Dict[str, PCLocData] = {
     Locations.ColosseumTrainers.pyrite_r0_2: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C12D, bit_pos=0), type=PCLocType.TRAINER, map_id=[PYRITE_COLOSSEUM_ID]),
     Locations.ColosseumTrainers.pyrite_r0_3: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1C12D, bit_pos=1), type=PCLocType.TRAINER, map_id=[PYRITE_COLOSSEUM_ID]),
     Locations.ColosseumTrainers.pyrite_r0_4: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECF, bit_pos=1), type=PCLocType.TRAINER, map_id=[PYRITE_COLOSSEUM_ID]),
+    Locations.ColosseumTrainers.pyrite_r0_win: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECF, bit_pos=1), type=PCLocType.TRAINER, map_id=[PYRITE_COLOSSEUM_ID]),    
 }
 
 pyrite_building_1f_locations: Dict[str, PCLocData] = {
