@@ -59,7 +59,8 @@ pregym_locations: Dict[str, PCLocData] = {
     Locations.Trainers.liqui: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=5), type=PCLocType.TRAINER, map_id=[PREGYM_ID]),
     Locations.Trainers.dugo: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=6), type=PCLocType.TRAINER, map_id=[PREGYM_ID]),
     Locations.Trainers.gwin: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0X1BECA, bit_pos=7), type=PCLocType.TRAINER, map_id=[PREGYM_ID]),
-    Locations.Trainers.justy: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECD, bit_pos=6), type=PCLocType.TRAINER, map_id=[PREGYM_ID])
+    Locations.Trainers.justy: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECD, bit_pos=6), type=PCLocType.TRAINER, map_id=[PREGYM_ID]),
+    Locations.Misc.tm27: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECD, bit_pos=6), type=PCLocType.TRAINER, map_id=[PREGYM_ID])
 }
 
 phenac_colosseum_r1_locations: Dict[str, PCLocData] = {

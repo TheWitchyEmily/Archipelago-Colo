@@ -212,6 +212,7 @@ class Locations:
         tm11 = "Phenac Colosseum - Obtain TM11"
         tm19 = "Phenac Colosseum - Optain TM19"
         tm22 = "Phenac Colosseum - Obtain TM22"
+        tm27 = "Phenac PreGym - Obtain TM27"
         dna_sample_1 = "Cipher Lab - DNA Sample Get"
         down_st_key = "Cipher Lab - Down St. Key Get"
         dna_sample_2 = "Cipher Lab - Left Hallway After Key DNA Sample Get"
