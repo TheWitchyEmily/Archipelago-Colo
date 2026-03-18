@@ -471,10 +471,9 @@ class PCContext(BaseContext):
                             await self.wait_for_next_loop(WAIT_TIMER_LONG)
                             continue
 
-                        arg_seed = read_string(0x80000001, 3)
-                        if not self.arg_seed.startswith(arg_seed):
+                        if not self.arg_seed.startswith(sbf.byte_string_strip_null_terminator(dme.read_bytes(0x80000001, 3))):
                             raise Exception(
-                                "Incorrected Randomized Pokemon Colosseum ISO file selected. The seed does not match." +
+                                "Incorrect Randomized Pokemon Colosseum ISO file selected. The seed does not match." +
                                 "Please verify that you are using the right ISO/seed/APPC file.")
 
                         self.dolphin_status = CONNECTION_CONNECTED
