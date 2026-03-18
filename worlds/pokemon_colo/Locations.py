@@ -30,6 +30,7 @@ start_locations: Dict[str, PCLocData] = {
 
 outside_city_locations: Dict[str, PCLocData] = {
     Locations.Trainers.willie: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BEC5, bit_pos=7), type=PCLocType.TRAINER, map_id=[OUTSKIRT_STAND_ID]),
+    Locations.Trainers.willie_rebattle: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECD, bit_pos=3), type=PCLocType.TRAINER, map_id=[OUTSKIRT_STAND_ID]),
     Locations.Misc.bartender_gives_5_pokeballs: PCLocData(ram_info=PCRamData(ram_addr=PRIMARY_POINTER, ptr=True, ptr_offset=0x1BECB, bit_pos=1), type=PCLocType.EVENT, map_id=[OUTSKIRT_STAND_ID])
 }
 

@@ -1,6 +1,7 @@
 class Locations:
     class Trainers:
         willie = "Outside-City Stand - Trainer Willie Defeated"
+        willie_rebattle = "Outside-City Stand - Trainer Willie Rebattled"
         folly = "Phenac City - Shady Guy Folly Defeated"
         wakin = "Phenac City - Team Snagem Grunt Wakin Defeated"
         folly_1 = "Phenac City - Miror B. Peon Folly Defeated"

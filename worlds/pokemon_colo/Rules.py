@@ -22,6 +22,7 @@ class ColosseumRules:
         self.options = world.options
         self.world = world
         self.location_rules = {
+            Locations.Trainers.willie_rebattle: self.access_pyrite,
             Locations.Trainers.hader: self.access_under,
             Locations.Trainers.dury: self.access_under,
             Locations.Trainers.aidel: self.access_under,
