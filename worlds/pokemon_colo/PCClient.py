@@ -267,8 +267,20 @@ class PCContext(BaseContext):
         elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0xFE and byte4 == 0xC4:
             map = PYRITE_BUILDING_ROOF_ID       
         elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x1F and byte4 == 0x6C:
-            map = PYRITE_BUILDING_ROOF_INSIDE_ID 
-        return map
+            map = PYRITE_BUILDING_ROOF_INSIDE_ID        
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x0A and byte4 == 0x58:
+            map = PYRITE_CAVE_ENTRANCE_ID        
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x0D and byte4 == 0x9C:
+            map = PYRITE_CAVE_B1F_ID        
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x0E and byte4 == 0x34:
+            map = PYRITE_CAVE_1F_ID        
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x0E and byte4 == 0x80:
+            map = PYRITE_CAVE_SEWERS_ID        
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x0D and byte4 == 0xE8:
+            map = PYRITE_CAVE_AFTER_SEWERS_ID        
+        elif byte1 == 0x80 and byte2 == 0x7F and byte3 == 0x0F and byte4 == 0xFC:
+            map = PYRITE_CAVE_HIDEOUT_ID
+        return map  
 
     async def pc_check_locations(self):
         current_map: int = self.get_map_id()
